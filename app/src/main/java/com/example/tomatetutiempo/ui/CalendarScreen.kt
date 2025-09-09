@@ -119,7 +119,6 @@ fun CalendarScreen(modifier: Modifier = Modifier) {
     }
 }
 
-// 👇 Esto reemplaza a Greeting automáticamente sin tocar MainActivity
 @Composable
 fun Greeting(name: String, modifier: Modifier = Modifier) {
     CalendarScreen(modifier = modifier)
