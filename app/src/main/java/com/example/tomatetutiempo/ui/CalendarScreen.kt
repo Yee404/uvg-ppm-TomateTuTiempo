@@ -14,7 +14,7 @@ import androidx.compose.material.icons.filled.Menu
 import androidx.compose.material.icons.filled.PlayArrow
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
-import androidx.compose.material3.ExperimentalMaterial3Api   // <<-- NUEVO
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.Scaffold
@@ -27,18 +27,17 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 
-/* ===== Colores ===== */
+/* Colores */
 private val Green = Color(0xFF2E7D32)
 private val GreenLight = Color(0xFFEAF5E6)
 private val TextGray = Color(0xFF4A4A4A)
 private val MutedGray = Color(0xFF777777)
 
-/* ===== Datos demo ===== */
+/* Datos demo */
 data class DayChip(val day: String, val dow: String, val marks: String = "")
 private val sampleDays = listOf(
     DayChip("03", "Wed", "*"),
@@ -47,8 +46,7 @@ private val sampleDays = listOf(
     DayChip("06", "Sat", "*"),
 )
 
-/* ===== Pantalla ===== */
-@OptIn(ExperimentalMaterial3Api::class)   // <<-- NUEVO
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun CalendarScreen(modifier: Modifier = Modifier) {
     var selected by remember { mutableStateOf("03") }
@@ -56,16 +54,9 @@ fun CalendarScreen(modifier: Modifier = Modifier) {
     Scaffold(
         topBar = {
             TopAppBar(
-                colors = TopAppBarDefaults.topAppBarColors(
-                    containerColor = GreenLight
-                ),
+                colors = TopAppBarDefaults.topAppBarColors(containerColor = GreenLight),
                 title = {
-                    Text(
-                        text = "Calendario",
-                        color = Green,
-                        fontWeight = FontWeight.SemiBold,
-                        fontSize = 18.sp
-                    )
+                    Text("Calendario", color = Green, fontWeight = FontWeight.SemiBold, fontSize = 18.sp)
                 },
                 navigationIcon = {
                     IconButton(onClick = {}) {
@@ -89,32 +80,18 @@ fun CalendarScreen(modifier: Modifier = Modifier) {
         ) {
             Spacer(Modifier.height(8.dp))
 
-            Text(
-                text = "Septiembre",
-                color = Green,
-                fontSize = 28.sp,
-                fontWeight = FontWeight.Bold
-            )
+            Text("Septiembre", color = Green, fontSize = 28.sp, fontWeight = FontWeight.Bold)
 
             Spacer(Modifier.height(8.dp))
 
-            /* Fila de días */
-            LazyRow(
-                contentPadding = PaddingValues(vertical = 8.dp),
-                horizontalArrangement = Arrangement.spacedBy(12.dp)
-            ) {
+            LazyRow(horizontalArrangement = Arrangement.spacedBy(12.dp), contentPadding = PaddingValues(vertical = 8.dp)) {
                 items(sampleDays) { d ->
-                    DayChipItem(
-                        data = d,
-                        selected = selected == d.day,
-                        onClick = { selected = d.day }
-                    )
+                    DayChipItem(d, selected == d.day) { selected = d.day }
                 }
             }
 
             Spacer(Modifier.height(8.dp))
 
-            /* Línea + tarjeta */
             Row(
                 modifier = Modifier.fillMaxWidth(),
                 verticalAlignment = Alignment.CenterVertically
@@ -131,23 +108,15 @@ fun CalendarScreen(modifier: Modifier = Modifier) {
                     duration = "2:30 horas"
                 )
             }
-
-            Spacer(Modifier.height(24.dp))
         }
     }
 }
 
-/* ===== Componentes ===== */
-
+/* Componentes */
 @Composable
-private fun DayChipItem(
-    data: DayChip,
-    selected: Boolean,
-    onClick: () -> Unit
-) {
+private fun DayChipItem(data: DayChip, selected: Boolean, onClick: () -> Unit) {
     val bg = if (selected) Green else Color.White
     val fg = if (selected) Color.White else Green
-
     Card(
         colors = CardDefaults.cardColors(containerColor = bg),
         shape = RoundedCornerShape(14.dp),
@@ -173,12 +142,7 @@ private fun DayChipItem(
 }
 
 @Composable
-private fun TaskCard(
-    title: String,
-    subtitle: String,
-    duration: String,
-    modifier: Modifier = Modifier
-) {
+private fun TaskCard(title: String, subtitle: String, duration: String, modifier: Modifier = Modifier) {
     Card(
         modifier = modifier.fillMaxWidth(),
         colors = CardDefaults.cardColors(containerColor = Color.White),
@@ -194,7 +158,6 @@ private fun TaskCard(
                     fontSize = 20.sp,
                     modifier = Modifier.weight(1f)
                 )
-                // cuadrado derecho
                 Box(
                     modifier = Modifier
                         .size(18.dp)
@@ -215,34 +178,14 @@ private fun TaskCard(
 
 @Composable
 private fun TimelineBar(modifier: Modifier = Modifier) {
-    Column(
-        modifier = modifier,
-        horizontalAlignment = Alignment.CenterHorizontally
-    ) {
-        Box(
-            Modifier
-                .size(16.dp)
-                .clip(CircleShape)
-                .background(Green)
-        )
-        Spacer(
-            Modifier
-                .width(4.dp)
-                .weight(1f)
-                .background(Green.copy(alpha = 0.7f))
-        )
-        Box(
-            Modifier
-                .size(20.dp)
-                .clip(CircleShape)
-                .background(Color(0xFF9BE24D))
-        )
+    Column(modifier = modifier, horizontalAlignment = Alignment.CenterHorizontally) {
+        Box(Modifier.size(16.dp).clip(CircleShape).background(Green))
+        Spacer(Modifier.width(4.dp).weight(1f).background(Green.copy(alpha = 0.7f)))
+        Box(Modifier.size(20.dp).clip(CircleShape).background(Color(0xFF9BE24D)))
     }
 }
 
-/* ===== Preview ===== */
+/* Preview */
 @Preview(showBackground = true, backgroundColor = 0xFFEAF5E6)
 @Composable
-private fun PreviewCalendarScreen() {
-    CalendarScreen()
-}
+private fun PreviewCalendarScreen() { CalendarScreen() }
