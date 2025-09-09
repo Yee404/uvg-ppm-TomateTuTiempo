@@ -1,3 +1,11 @@
 <resources>
     <string name="app_name">TomateTuTiempo</string>
+    <string name="eliminar_tarea">Eliminar Tarea</string>
+    <string name="msg_tarea_eliminada">Se Elimino la Tarea</string>
+    <string name="fecha_seleccionada">Fecha seleccionada: %1$s</string>
+    <string name="seleccionar_fecha">Seleccionar Fecha</string>
+    <string name="ingr_nombre_de_la_tarea">Ingresa el nombre de la tarea</string>
+    <string name="ingre_tema_de_tarea">Ingresa el tema de la tarea</string>
+    <string name="ing_descripcion_de_tarea">Ingresa la descripcion de la tarea</string>
+    <string name="titulo">Crea Una Tarea</string>
 </resources>

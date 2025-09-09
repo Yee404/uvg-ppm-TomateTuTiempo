@@ -12,33 +12,51 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.tomatetutiempo.Presentation.Componentes.MenuButton
 import com.example.tomatetutiempo.Presentation.Componentes.PerfilButton
 import com.example.tomatetutiempo.Presentation.Componentes.FAB
+import com.example.tomatetutiempo.Presentation.Componentes.CampoDeTexto
+import com.example.tomatetutiempo.Presentation.Componentes.SelectorFecha
+import com.example.tomatetutiempo.R
+import com.example.tomatetutiempo.ui.theme.Verdeclaro
+import com.example.tomatetutiempo.ui.theme.Verdetexto
+
 
 @Composable
 fun PantallaNuevaTarea() {
     Box(
         modifier = Modifier
             .fillMaxSize()
-            .background(Color(0xFFEAF5E6))
+            .background(Verdeclaro)
     ) {
-        Row (
+        Column (
             modifier = Modifier
-                .fillMaxWidth()
-                .padding(16.dp),
-            horizontalArrangement = Arrangement.SpaceBetween,
-            verticalAlignment = Alignment.CenterVertically) {
+                .fillMaxSize()) {
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(16.dp),
+                horizontalArrangement = Arrangement.SpaceBetween,
+                verticalAlignment = Alignment.CenterVertically
+            ) {
 
-            MenuButton()
-            Text(text = "Crea Una Tarea",
-                color = Color(0xFF2E7C32),
-                fontSize = 18.sp)
-            PerfilButton()
+                MenuButton()
+                Text(
+                    text = stringResource(R.string.titulo),
+                    color = Verdetexto,
+                    fontSize = 18.sp
+                )
+                PerfilButton()
+            }
+            CampoDeTexto(label = stringResource(R.string.ingr_nombre_de_la_tarea))
+            CampoDeTexto(label = stringResource(R.string.ingre_tema_de_tarea))
+            CampoDeTexto(label = stringResource(R.string.ing_descripcion_de_tarea))
+            SelectorFecha()
+
         }
 
         FAB(
@@ -48,9 +66,9 @@ fun PantallaNuevaTarea() {
                 .padding(vertical = 32.dp)
 
         )
-
     }
 }
+
 
 @Preview(showBackground = true)
 @Composable
