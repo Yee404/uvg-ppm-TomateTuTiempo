@@ -11,7 +11,7 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         setContent {
             TomateTuTiempoTheme {
-                CalendarScreen()   // 👈 MOSTRAR tu pantalla, no Greeting()
+                CalendarScreen()   //  MOSTRAR tu pantalla, no Greeting()
             }
         }
     }
