@@ -24,6 +24,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
@@ -31,6 +32,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
+import com.example.tomatetutiempo.R // Importación para la clase R
 import com.example.tomatetutiempo.ui.theme.TomateTuTiempoTheme
 import com.example.tomatetutiempo.ui.theme.LightGreenBackground
 import com.example.tomatetutiempo.ui.theme.DarkGreenText
@@ -40,11 +42,12 @@ import java.util.Locale
 
 /**
  * Formatea un número total de segundos a una cadena de texto en formato HH:MM:SS o MM:SS.
+ * Si el tiempo es menor a una hora, se omite la sección de horas (MM:SS).
  *
  * @param totalSeconds El número total de segundos a formatear.
- * @return Una cadena de texto representando el tiempo formateado.
+ * @return Una cadena de texto representando el tiempo formateado (e.g., "01:23:45" o "23:45").
  */
-private fun formatTime(totalSeconds: Int): String {
+fun formatTime(totalSeconds: Int): String {
     val hours = totalSeconds / 3600
     val minutes = (totalSeconds % 3600) / 60
     val seconds = totalSeconds % 60
@@ -56,12 +59,13 @@ private fun formatTime(totalSeconds: Int): String {
 }
 
 /**
- * Composable que muestra el tiempo del temporizador formateado.
+ * Composable que muestra el tiempo del temporizador de forma destacada.
+ * Utiliza la función [formatTime] para dar formato al tiempo.
  *
  * @param timeInSeconds El tiempo actual en segundos para mostrar.
  */
 @Composable
-private fun TimerDisplay(timeInSeconds: Int) {
+fun TimerDisplay(timeInSeconds: Int) {
     Text(
         text = formatTime(timeInSeconds),
         fontSize = 90.sp,
@@ -72,15 +76,16 @@ private fun TimerDisplay(timeInSeconds: Int) {
 }
 
 /**
- * Composable que muestra los controles del temporizador.
+ * Composable que muestra los controles del temporizador: disminuir tiempo, play/pausa y aumentar tiempo.
+ * Los botones de aumentar y disminuir tiempo se deshabilitan cuando el temporizador está en curso.
  *
  * @param isTimerRunning Indica si el temporizador está actualmente en funcionamiento.
  * @param onDecrease Lambda que se invoca cuando se presiona el botón de disminuir tiempo.
  * @param onIncrease Lambda que se invoca cuando se presiona el botón de aumentar tiempo.
- * @param onPlayPause Lambda que se invoca cuando se presiona el botón de play/pausa.
+ * @param onPlayPause Lambda que se invoca cuando se presiona el botón de play/pausa, alternando el estado del temporizador.
  */
 @Composable
-private fun TimerControls(
+fun TimerControls(
     isTimerRunning: Boolean,
     onDecrease: () -> Unit,
     onIncrease: () -> Unit,
@@ -91,14 +96,10 @@ private fun TimerControls(
         horizontalArrangement = Arrangement.Center,
         modifier = Modifier.fillMaxWidth()
     ) {
-        /**
-         * IconButton para disminuir el tiempo del temporizador.
-         * Al presionarlo, invoca la lambda [onDecrease].
-         */
         IconButton(onClick = onDecrease, enabled = !isTimerRunning) {
             Icon(
                 imageVector = Icons.Filled.Remove,
-                contentDescription = "Disminuir tiempo", // TODO: Usar stringResource
+                contentDescription = stringResource(R.string.timer_decrease_time_description),
                 tint = if (!isTimerRunning) IconColor else Color.Gray,
                 modifier = Modifier.size(48.dp)
             )
@@ -106,30 +107,21 @@ private fun TimerControls(
 
         Spacer(modifier = Modifier.width(30.dp))
 
-        /**
-         * IconButton para iniciar o pausar el temporizador.
-         * Al presionarlo, invoca la lambda [onPlayPause].
-         * El ícono cambia entre Play y Pause según el estado [isTimerRunning].
-         */
         IconButton(onClick = onPlayPause, modifier = Modifier.size(80.dp)) {
             Icon(
                 imageVector = if (isTimerRunning) Icons.Filled.Pause else Icons.Filled.PlayArrow,
-                contentDescription = if (isTimerRunning) "Pausar temporizador" else "Iniciar temporizador", // TODO: Usar stringResource
+                contentDescription = if (isTimerRunning) stringResource(R.string.timer_pause_timer_description) else stringResource(R.string.timer_start_timer_description),
                 tint = DarkGreenText,
-                modifier = Modifier.size(60.dp) // Tamaño del ícono Play/Pause
+                modifier = Modifier.size(60.dp)
             )
         }
 
         Spacer(modifier = Modifier.width(30.dp))
 
-        /**
-         * IconButton para aumentar el tiempo del temporizador.
-         * Al presionarlo, invoca la lambda [onIncrease].
-         */
         IconButton(onClick = onIncrease, enabled = !isTimerRunning) {
             Icon(
                 imageVector = Icons.Filled.Add,
-                contentDescription = "Aumentar tiempo", // TODO: Usar stringResource
+                contentDescription = stringResource(R.string.timer_increase_time_description),
                 tint = if (!isTimerRunning) IconColor else Color.Gray,
                 modifier = Modifier.size(48.dp)
             )
@@ -138,65 +130,76 @@ private fun TimerControls(
 }
 
 /**
- * Pantalla principal del temporizador. Muestra información de la tarea, el temporizador,
- * controles para ajustar el tiempo y un botón para finalizar la sesión.
+ * Pantalla principal del temporizador Pomodoro.
+ * Permite al usuario iniciar, pausar y ajustar un temporizador.
+ * Muestra información de una tarea de ejemplo y un botón para finalizar la sesión del temporizador.
  *
- * @param navController El controlador de navegación para manejar acciones como volver atrás.
+ * Esta pantalla utiliza un [Scaffold] para la estructura básica, con una [TopAppBar]
+ * para la navegación hacia atrás y un cuerpo de pantalla que contiene el [TimerDisplay],
+ * [TimerControls], información de la tarea y un botón de "Finalizado".
+ *
+ * El estado del temporizador ([timerValueInSeconds] y [isTimerRunning]) se gestiona con [remember] y [mutableStateOf].
+ * Un [LaunchedEffect] se encarga de la lógica de decremento del tiempo cuando el temporizador está activo.
+ *
+ * @param navController El controlador de navegación de Jetpack Compose, utilizado para la acción de "volver atrás".
  */
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun TimerScreen(navController: NavController) {
-    var timerValueInSeconds by remember { mutableIntStateOf(4736) } // 1h 18m 56s
+    var timerValueInSeconds by remember { mutableIntStateOf(4736) } // Valor inicial de ejemplo: 1h 18m 56s
     var isTimerRunning by remember { mutableStateOf(false) }
 
+    // Efecto para manejar la lógica del temporizador cuando está activo.
     LaunchedEffect(key1 = timerValueInSeconds, key2 = isTimerRunning) {
         if (isTimerRunning && timerValueInSeconds > 0) {
-            delay(1000L) // Espera 1 segundo
-            timerValueInSeconds--
+            delay(1000L) // Espera 1 segundo.
+            timerValueInSeconds-- // Decrementa el tiempo.
         } else if (timerValueInSeconds == 0 && isTimerRunning) {
-            isTimerRunning = false // Detiene el temporizador si llega a 0
+            isTimerRunning = false // Detiene el temporizador si llega a 0.
         }
     }
 
     Scaffold(
         topBar = {
             TopAppBar(
-                title = { /* No title needed */ },
+                title = { /* No se necesita título para esta pantalla. */ },
                 navigationIcon = {
                     IconButton(onClick = { navController.popBackStack() }) {
                         Icon(
                             imageVector = Icons.AutoMirrored.Filled.ArrowBack,
-                            contentDescription = "Atrás", // TODO: Usar stringResource
+                            contentDescription = stringResource(R.string.timer_back_button_description),
                             tint = DarkGreenText,
-                            modifier = Modifier.size(20.dp) // Tamaño del ícono de volver ajustado
+                            modifier = Modifier.size(20.dp)
                         )
                     }
                 },
                 colors = TopAppBarDefaults.topAppBarColors(
-                    containerColor = Color.Transparent,
-                    navigationIconContentColor = DarkGreenText
+                    containerColor = Color.Transparent, // Fondo transparente para la TopAppBar.
+                    navigationIconContentColor = DarkGreenText // Color del ícono de navegación.
                 )
             )
         },
-        containerColor = LightGreenBackground
+        containerColor = LightGreenBackground // Color de fondo para la pantalla.
     ) { innerPadding ->
         Column(
             modifier = Modifier
-                .padding(innerPadding)
+                .padding(innerPadding) // Aplica el padding proporcionado por Scaffold.
                 .fillMaxSize()
-                .padding(16.dp),
+                .padding(16.dp), // Padding general para el contenido de la columna.
             horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.SpaceBetween
+            verticalArrangement = Arrangement.SpaceBetween // Distribuye el espacio entre los elementos.
         ) {
+            // Sección superior: Información de la tarea y visualización del temporizador.
             Column(
                 horizontalAlignment = Alignment.CenterHorizontally,
-                modifier = Modifier.weight(1f)
+                modifier = Modifier.weight(1f) // Ocupa el espacio disponible, empujando el botón Finalizado hacia abajo.
             ) {
                 Spacer(modifier = Modifier.height(16.dp))
 
-                Text("Cálculo I", fontSize = 36.sp, fontWeight = FontWeight.Bold, color = DarkGreenText)
-                Text("(2:00pm - 4:00pm)", fontSize = 18.sp, color = DarkGreenText)
-                Text("Hoja de Trabajo 2", fontSize = 20.sp, color = DarkGreenText, modifier = Modifier.padding(bottom = 70.dp))
+                // Textos de ejemplo para la tarea.
+                Text(stringResource(R.string.timer_task_name_example), fontSize = 36.sp, fontWeight = FontWeight.Bold, color = DarkGreenText)
+                Text(stringResource(R.string.timer_task_time_example), fontSize = 18.sp, color = DarkGreenText)
+                Text(stringResource(R.string.timer_task_detail_example), fontSize = 20.sp, color = DarkGreenText, modifier = Modifier.padding(bottom = 70.dp))
 
                 TimerDisplay(timeInSeconds = timerValueInSeconds)
 
@@ -205,49 +208,50 @@ fun TimerScreen(navController: NavController) {
                 TimerControls(
                     isTimerRunning = isTimerRunning,
                     onDecrease = {
-                        if (!isTimerRunning && timerValueInSeconds >= 60) {
+                        if (!isTimerRunning && timerValueInSeconds >= 60) { // Solo disminuye si no está corriendo y hay tiempo.
                             timerValueInSeconds -= 60
-                        } else if (!isTimerRunning) {
+                        } else if (!isTimerRunning) { // Si es menor a 60, va a 0.
                             timerValueInSeconds = 0
                         }
                     },
                     onIncrease = {
-                        if (!isTimerRunning) {
+                        if (!isTimerRunning) { // Solo aumenta si no está corriendo.
                             timerValueInSeconds += 60
                         }
                     },
                     onPlayPause = {
-                        isTimerRunning = !isTimerRunning
+                        isTimerRunning = !isTimerRunning // Alterna el estado del temporizador.
                     }
                 )
             }
 
-            /**
-             * Botón para finalizar la sesión del temporizador.
-             * Estilo minimalista y moderno usando OutlinedButton.
-             */
+            // Botón para finalizar la sesión del temporizador.
             OutlinedButton(
                 onClick = {
                     Log.d("TimerScreen", "Botón FINALIZADO presionado. Tiempo: ${formatTime(timerValueInSeconds)}")
-                    isTimerRunning = false // Detener el temporizador al finalizar
-                    // TODO: Lógica real para finalizar (navegar, guardar, etc.)
+                    isTimerRunning = false // Detiene el temporizador al finalizar.
+                    // TODO: Implementar lógica real para finalizar la sesión (e.g., navegar, guardar datos).
                 },
                 shape = RoundedCornerShape(8.dp),
                 colors = ButtonDefaults.outlinedButtonColors(
-                    contentColor = DarkGreenText // Color del texto y el borde cuando no está presionado
+                    contentColor = DarkGreenText
                 ),
-                border = BorderStroke(1.dp, DarkGreenText), // Grosor y color del borde
+                border = BorderStroke(1.dp, DarkGreenText),
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(vertical = 16.dp) // Padding vertical reducido
-                    .height(44.dp) // Altura reducida
+                    .padding(vertical = 16.dp)
+                    .height(44.dp)
             ) {
-                Text("FINALIZADO", fontSize = 16.sp, fontWeight = FontWeight.SemiBold) // Ajuste de fuente
+                Text(stringResource(R.string.timer_finish_button_text), fontSize = 16.sp, fontWeight = FontWeight.SemiBold)
             }
         }
     }
 }
 
+/**
+ * Composable de previsualización para la [TimerScreen].
+ * Muestra cómo se verá la pantalla del temporizador en el entorno de diseño de Android Studio.
+ */
 @Preview(showBackground = true)
 @Composable
 fun TimerScreenPreview() {

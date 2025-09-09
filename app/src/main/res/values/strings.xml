@@ -1,3 +1,23 @@
 <resources>
+    <!-- Nombre de la aplicación -->
     <string name="app_name">TomateTuTiempo</string>
+
+    <!-- Strings para la pantalla del Temporizador (TimerScreen) -->
+
+    <!-- Descripciones de contenido para accesibilidad en TimerControls -->
+    <string name="timer_decrease_time_description">Disminuir tiempo</string>
+    <string name="timer_pause_timer_description">Pausar temporizador</string>
+    <string name="timer_start_timer_description">Iniciar temporizador</string>
+    <string name="timer_increase_time_description">Aumentar tiempo</string>
+
+    <!-- Descripción de contenido para el botón de navegación superior -->
+    <string name="timer_back_button_description">Atrás</string>
+
+    <!-- Textos de ejemplo para la información de la tarea en TimerScreen -->
+    <string name="timer_task_name_example">Cálculo I</string>
+    <string name="timer_task_time_example">(2:00pm - 4:00pm)</string>
+    <string name="timer_task_detail_example">Hoja de Trabajo 2</string>
+
+    <!-- Texto para el botón de finalizar en TimerScreen -->
+    <string name="timer_finish_button_text">FINALIZADO</string>
 </resources>
