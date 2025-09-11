@@ -1,3 +1,24 @@
 <resources>
     <string name="app_name">TomateTuTiempo</string>
+    <string name="bienvenido_a">Bienvenido a</string>
+    <string name="tu_tiempo">🍅Tu Tiempo</string>
+    <string name="logingoogle">Login with Google</string>
+    <string name="loginface">Login with Facebook</string>
+    <string name="or">  OR  </string>
+    <string name="email">Email</string>
+    <string name="password">Password</string>
+    <string name="hidepass">Hide password</string>
+    <string name="showpass">Show password</string>
+    <string name="remember_me">Remember me</string>
+    <string name="forgotpass">Forgot Password?</string>
+    <string name="ingresar_email">Por favor ingrese un email</string>
+    <string name="email_invalido">Por favor ingrese un email válido</string>
+    <string name="ingresar_contrasenna">Por favor ingrese una contraseña</string>
+    <string name="contrasenna_invalida">La contraseña debe tener al menos 6 caracteres</string>
+    <string name="login_exitoso">¡Login exitoso! Recuerda: $rememberMe</string>
+    <string name="login">Login</string>
+    <string name="dont_account">Don´t have an account? </string>
+    <string name="register">Register</string>
+    <string name="navigate_register">Navigate to Register</string>
+
 </resources>
