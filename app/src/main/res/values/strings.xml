@@ -1,4 +1,5 @@
 <resources>
+    <!-- Nombre de la aplicación -->
     <string name="app_name">TomateTuTiempo</string>
     <string name="bienvenido_a">Bienvenido a</string>
     <string name="tu_tiempo">🍅Tu Tiempo</string>
@@ -17,7 +18,7 @@
     <string name="contrasenna_invalida">La contraseña debe tener al menos 6 caracteres</string>
     <string name="login_exitoso">¡Login exitoso! Recuerda: $rememberMe</string>
     <string name="login">Login</string>
-    <string name="dont_account">Don´t have an account? </string>
+    <string name="dont_account">Don't have an account? </string>
     <string name="register">Register</string>
     <string name="navigate_register">Navigate to Register</string>
 
@@ -29,4 +30,23 @@
     <string name="ingre_tema_de_tarea">Ingresa el tema de la tarea</string>
     <string name="ing_descripcion_de_tarea">Ingresa la descripcion de la tarea</string>
     <string name="titulo">Crea Una Tarea</string>
+
+    <!-- Strings para la pantalla del Temporizador (TimerScreen) -->
+
+    <!-- Descripciones de contenido para accesibilidad en TimerControls -->
+    <string name="timer_decrease_time_description">Disminuir tiempo</string>
+    <string name="timer_pause_timer_description">Pausar temporizador</string>
+    <string name="timer_start_timer_description">Iniciar temporizador</string>
+    <string name="timer_increase_time_description">Aumentar tiempo</string>
+
+    <!-- Descripción de contenido para el botón de navegación superior -->
+    <string name="timer_back_button_description">Atrás</string>
+
+    <!-- Textos de ejemplo para la información de la tarea en TimerScreen -->
+    <string name="timer_task_name_example">Cálculo I</string>
+    <string name="timer_task_time_example">(2:00pm - 4:00pm)</string>
+    <string name="timer_task_detail_example">Hoja de Trabajo 2</string>
+
+    <!-- Texto para el botón de finalizar en TimerScreen -->
+    <string name="timer_finish_button_text">FINALIZADO</string>
 </resources>
