@@ -1,8 +1,10 @@
 package com.example.tomatetutiempo.presentation.welcome
 
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import com.example.tomatetutiempo.ui.theme.TomateTuTiempoTheme
+import com.example.tomatetutiempo.R
 
 // @Preview(showBackground = true)
 // @Composable
@@ -25,7 +27,7 @@ import com.example.tomatetutiempo.ui.theme.TomateTuTiempoTheme
 fun WelcomeScreenFullPreview() {
     TomateTuTiempoTheme {
         WelcomeScreen(
-            userName = "Sara Rodriguez",
+            userName = stringResource(R.string.preview_user_name),
             profileImageRes = android.R.drawable.ic_menu_camera
         )
     }

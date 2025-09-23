@@ -20,6 +20,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.tomatetutiempo.presentation.theme.WelcomeColors
 
+
 @Composable
 fun MenuButton(
     icon: ImageVector,
@@ -55,7 +56,7 @@ fun MenuButton(
         Spacer(modifier = Modifier.width(16.dp))
 
         Text(
-            text = stringResource(textResId),
+            text = text,
             color = WelcomeColors.TextColor,
             fontSize = 16.sp,
             fontWeight = FontWeight.Medium,

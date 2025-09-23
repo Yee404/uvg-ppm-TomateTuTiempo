@@ -1,4 +1,4 @@
-package com.example.tomatetutiempo.presentation.components
+package com.example.tomatetutiempo.presentation.theme
 
 import androidx.compose.ui.graphics.Color
 

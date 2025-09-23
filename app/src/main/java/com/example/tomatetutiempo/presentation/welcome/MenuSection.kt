@@ -7,6 +7,9 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import com.example.tomatetutiempo.presentation.components.MenuButton
+import androidx.compose.ui.res.stringResource
+import com.example.tomatetutiempo.R
+
 
 data class MenuItem(
     val icon: androidx.compose.ui.graphics.vector.ImageVector,
@@ -26,27 +29,27 @@ fun MenuSection(
     val menuItems = listOf(
         MenuItem(
             icon = Icons.Default.Add,
-            text = "Añadir tarea",
+            text = stringResource(R.string.menu_add_task),
             onClick = onAddTaskClick
         ),
         MenuItem(
             icon = Icons.Default.DateRange,
-            text = "Calendario",
+            text = stringResource(R.string.menu_calendar),
             onClick = onCalendarClick
         ),
         MenuItem(
             icon = Icons.Default.ShoppingCart,
-            text = "Tienda",
+            text = stringResource(R.string.menu_store),
             onClick = onStoreClick
         ),
         MenuItem(
             icon = Icons.Default.Settings,
-            text = "Ajustes",
+            text = stringResource(R.string.menu_settings),
             onClick = onSettingsClick
         ),
         MenuItem(
             icon = Icons.Default.Person,
-            text = "Perfil",
+            text = stringResource(R.string.menu_profile),
             onClick = onProfileClick
         )
     )
@@ -58,7 +61,7 @@ fun MenuSection(
         menuItems.forEach { menuItem ->
             MenuButton(
                 icon = menuItem.icon,
-                textResId = menuItem.textResId,
+                text = menuItem.text,
                 onClick = menuItem.onClick
             )
         }

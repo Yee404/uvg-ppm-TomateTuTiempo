@@ -33,7 +33,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.tomatetutiempo.presentation.components.DarkGreenButton
 import com.example.tomatetutiempo.presentation.components.EmailField
-import com.example.tomatetutiempo.presentation.components.LoginColors
+import com.example.tomatetutiempo.presentation.theme.LoginColors
 import com.example.tomatetutiempo.presentation.components.OrDivider
 import com.example.tomatetutiempo.presentation.components.PasswordField
 import com.example.tomatetutiempo.presentation.components.RegisterFooter
