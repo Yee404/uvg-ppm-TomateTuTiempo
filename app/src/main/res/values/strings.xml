@@ -18,7 +18,7 @@
     <string name="contrasenna_invalida">La contraseña debe tener al menos 6 caracteres</string>
     <string name="login_exitoso">¡Login exitoso! Recuerda: $rememberMe</string>
     <string name="login">Login</string>
-    <string name="dont_account">Don't have an account? </string>
+    <string name="dont_account">Dont have an account? </string>
     <string name="register">Register</string>
     <string name="navigate_register">Navigate to Register</string>
 
