@@ -1,4 +1,4 @@
-package com.example.tomatetutiempo.Presentation.Componentes
+package com.example.tomatetutiempo.presentation.components
 
 import androidx.compose.foundation.layout.*
 import androidx.compose.material3.Button
@@ -22,7 +22,7 @@ fun SelectorFecha() {
     var fechaSeleccionada by remember { mutableStateOf("") }
 
     val calendario = Calendar.getInstance()
-    val año = calendario.get(Calendar.YEAR)
+    val annio = calendario.get(Calendar.YEAR)
     val mes = calendario.get(Calendar.MONTH)
     val dia = calendario.get(Calendar.DAY_OF_MONTH)
 
@@ -31,7 +31,7 @@ fun SelectorFecha() {
         { _: DatePicker, year: Int, month: Int, dayOfMonth: Int ->
             fechaSeleccionada = "$dayOfMonth/${month + 1}/$year"
         },
-        año, mes, dia
+        annio, mes, dia
     )
 
     Column(modifier = Modifier.padding(16.dp)) {

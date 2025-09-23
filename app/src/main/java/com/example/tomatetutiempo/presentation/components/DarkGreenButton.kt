@@ -1,4 +1,4 @@
-package com.example.tomatetutiempo
+package com.example.tomatetutiempo.presentation.components
 
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -23,7 +23,7 @@ fun DarkGreenButton(
         shape = RoundedCornerShape(10.dp),
         colors = ButtonDefaults.buttonColors(
             containerColor = LoginColors.DarkGreen, // ← Usa LoginColors en lugar de Color(0xFF467848)
-            contentColor = Color.White
+            contentColor = Color.Companion.White
         )
     ) {
         Text(text = text, fontSize = 16.sp)

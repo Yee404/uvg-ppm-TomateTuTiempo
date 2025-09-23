@@ -1,6 +1,5 @@
-package com.example.tomatetutiempo
+package com.example.tomatetutiempo.presentation.login
 
-//import com.example.tomatetutiempo.R
 import android.util.Patterns
 import android.widget.Toast
 import androidx.compose.foundation.BorderStroke
@@ -32,6 +31,15 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.example.tomatetutiempo.presentation.components.DarkGreenButton
+import com.example.tomatetutiempo.presentation.components.EmailField
+import com.example.tomatetutiempo.presentation.components.LoginColors
+import com.example.tomatetutiempo.presentation.components.OrDivider
+import com.example.tomatetutiempo.presentation.components.PasswordField
+import com.example.tomatetutiempo.presentation.components.RegisterFooter
+import com.example.tomatetutiempo.presentation.components.RememberForgotRow
+import com.example.tomatetutiempo.presentation.components.SocialButton
+import com.example.tomatetutiempo.R
 import com.example.tomatetutiempo.ui.theme.TomateTuTiempoTheme
 
 @Composable
@@ -55,28 +63,39 @@ fun Login() {
     val navigateRegisterText = stringResource(R.string.navigate_register)
 
     Box(
-        modifier = Modifier
+        modifier = Modifier.Companion
             .fillMaxSize()
             .background(LoginColors.GreenBackground)
             .verticalScroll(rememberScrollState())
             .padding(16.dp)
     ) {
-        Column(horizontalAlignment = Alignment.Start) {
+        Column(horizontalAlignment = Alignment.Companion.Start) {
 
-            Spacer(modifier = Modifier.height(20.dp))
+            Spacer(modifier = Modifier.Companion.height(20.dp))
 
             // TITULOS
-            Text(text = stringResource(R.string.bienvenido_a), fontSize = 28.sp, fontWeight = FontWeight.Bold, color = LoginColors.TextPrimary)
-            Spacer(modifier = Modifier.height(12.dp))
-            Text(text = stringResource(R.string.tu_tiempo), fontSize = 32.sp, fontWeight = FontWeight.Bold, color = LoginColors.DarkGreen)
-            Spacer(modifier = Modifier.height(32.dp))
+            Text(
+                text = stringResource(R.string.bienvenido_a),
+                fontSize = 28.sp,
+                fontWeight = FontWeight.Companion.Bold,
+                color = LoginColors.TextPrimary
+            )
+            Spacer(modifier = Modifier.Companion.height(12.dp))
+            Text(
+                text = stringResource(R.string.tu_tiempo),
+                fontSize = 32.sp,
+                fontWeight = FontWeight.Companion.Bold,
+                color = LoginColors.DarkGreen
+            )
+            Spacer(modifier = Modifier.Companion.height(32.dp))
 
             Card(
-                modifier = Modifier.fillMaxWidth(0.92f).align(Alignment.CenterHorizontally),
+                modifier = Modifier.Companion.fillMaxWidth(0.92f)
+                    .align(Alignment.Companion.CenterHorizontally),
                 shape = RoundedCornerShape(16.dp),
-                colors = CardDefaults.cardColors(containerColor = Color.White)
+                colors = CardDefaults.cardColors(containerColor = Color.Companion.White)
             ) {
-                Column(modifier = Modifier.padding(16.dp)) {
+                Column(modifier = Modifier.Companion.padding(16.dp)) {
 
                     // Botones sociales
                     SocialButton(
@@ -84,59 +103,86 @@ fun Login() {
                         onClick = {
                             Toast.makeText(context, logingoogleText, Toast.LENGTH_SHORT).show()
                         },
-                        modifier = Modifier.fillMaxWidth(),
+                        modifier = Modifier.Companion.fillMaxWidth(),
                         container = LoginColors.LightGreen,
-                        content = Color.Black,
+                        content = Color.Companion.Black,
                         border = BorderStroke(1.dp, LoginColors.GrayBorder)
                     )
 
-                    Spacer(Modifier.height(12.dp))
+                    Spacer(Modifier.Companion.height(12.dp))
 
                     SocialButton(
                         text = loginfaceText,
                         onClick = {
                             Toast.makeText(context, loginfaceText, Toast.LENGTH_SHORT).show()
                         },
-                        modifier = Modifier.fillMaxWidth(),
+                        modifier = Modifier.Companion.fillMaxWidth(),
                         container = LoginColors.LightGreen,
-                        content = Color.Black,
+                        content = Color.Companion.Black,
                         border = BorderStroke(1.dp, LoginColors.GrayBorder)
                     )
 
-                    Spacer(Modifier.height(24.dp))
-                    OrDivider(text = stringResource(R.string.or), color = LoginColors.GrayBorder, textColor = Color.Gray)
-                    Spacer(Modifier.height(24.dp))
+                    Spacer(Modifier.Companion.height(24.dp))
+                    OrDivider(
+                        text = stringResource(R.string.or),
+                        color = LoginColors.GrayBorder,
+                        textColor = Color.Companion.Gray
+                    )
+                    Spacer(Modifier.Companion.height(24.dp))
 
                     // Campos
                     EmailField(value = email, onValueChange = { email = it })
-                    Spacer(Modifier.height(12.dp))
+                    Spacer(Modifier.Companion.height(12.dp))
                     PasswordField(value = password, onValueChange = { password = it })
-                    Spacer(Modifier.height(8.dp))
+                    Spacer(Modifier.Companion.height(8.dp))
 
                     // Remember / Forgot
-                    RememberForgotRow(remember = rememberMe, onRememberChange = { rememberMe = it }) {
+                    RememberForgotRow(
+                        remember = rememberMe,
+                        onRememberChange = { rememberMe = it }) {
                         Toast.makeText(context, forgotpassText, Toast.LENGTH_SHORT).show()
                     }
 
-                    Spacer(Modifier.height(16.dp))
+                    Spacer(Modifier.Companion.height(16.dp))
 
                     // Login Button
                     DarkGreenButton(text = stringResource(R.string.login), onClick = {
                         val isEmailValid = Patterns.EMAIL_ADDRESS.matcher(email).matches()
                         val isPasswordValid = password.length >= 6
                         when {
-                            email.isEmpty() -> Toast.makeText(context, ingresarEmailText, Toast.LENGTH_SHORT).show()
-                            !isEmailValid -> Toast.makeText(context, emailInvalidoText, Toast.LENGTH_SHORT).show()
-                            password.isEmpty() -> Toast.makeText(context, ingresarContrasennaText, Toast.LENGTH_SHORT).show()
-                            !isPasswordValid -> Toast.makeText(context, contrasennaInvalidaText, Toast.LENGTH_SHORT).show()
+                            email.isEmpty() -> Toast.makeText(
+                                context,
+                                ingresarEmailText,
+                                Toast.LENGTH_SHORT
+                            ).show()
+
+                            !isEmailValid -> Toast.makeText(
+                                context,
+                                emailInvalidoText,
+                                Toast.LENGTH_SHORT
+                            ).show()
+
+                            password.isEmpty() -> Toast.makeText(
+                                context,
+                                ingresarContrasennaText,
+                                Toast.LENGTH_SHORT
+                            ).show()
+
+                            !isPasswordValid -> Toast.makeText(
+                                context,
+                                contrasennaInvalidaText,
+                                Toast.LENGTH_SHORT
+                            ).show()
+
                             else -> {
-                                val msg = loginExitosoText.replace("\$rememberMe", rememberMe.toString())
+                                val msg =
+                                    loginExitosoText.replace("\$rememberMe", rememberMe.toString())
                                 Toast.makeText(context, msg, Toast.LENGTH_SHORT).show()
                             }
                         }
                     })
 
-                    Spacer(Modifier.height(100.dp))
+                    Spacer(Modifier.Companion.height(100.dp))
 
                     // Footer
                     RegisterFooter {

@@ -1,4 +1,4 @@
-package com.example.tomatetutiempo.Presentation.Componentes
+package com.example.tomatetutiempo.presentation.components
 
 import androidx.compose.foundation.layout.size
 import androidx.compose.material3.Button

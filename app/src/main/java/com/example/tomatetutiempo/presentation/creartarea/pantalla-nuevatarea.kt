@@ -1,4 +1,4 @@
-package com.example.tomatetutiempo.Presentation.creartarea
+package com.example.tomatetutiempo.presentation.creartarea
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -16,11 +16,11 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.example.tomatetutiempo.Presentation.Componentes.MenuButton
-import com.example.tomatetutiempo.Presentation.Componentes.PerfilButton
-import com.example.tomatetutiempo.Presentation.Componentes.FAB
-import com.example.tomatetutiempo.Presentation.Componentes.CampoDeTexto
-import com.example.tomatetutiempo.Presentation.Componentes.SelectorFecha
+import com.example.tomatetutiempo.presentation.components.MenuButton
+import com.example.tomatetutiempo.presentation.components.PerfilButton
+import com.example.tomatetutiempo.presentation.components.FAB
+import com.example.tomatetutiempo.presentation.components.CampoDeTexto
+import com.example.tomatetutiempo.presentation.components.SelectorFecha
 import com.example.tomatetutiempo.R
 import com.example.tomatetutiempo.ui.theme.Verdeclaro
 import com.example.tomatetutiempo.ui.theme.Verdetexto

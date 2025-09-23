@@ -1,4 +1,4 @@
-package com.example.tomatetutiempo
+package com.example.tomatetutiempo.presentation.components
 
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -15,23 +15,24 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.example.tomatetutiempo.R
 
 @Composable
 fun RegisterFooter(onClick: () -> Unit) {
     val greencolor = Color(0xFF467848)
     val text = buildAnnotatedString {
         append(stringResource(R.string.dont_account))
-        withStyle(SpanStyle(color = greencolor, fontWeight = FontWeight.Bold)) {
+        withStyle(SpanStyle(color = greencolor, fontWeight = FontWeight.Companion.Bold)) {
             append(stringResource(R.string.register))
         }
     }
     Text(
         text = text,
-        modifier = Modifier
+        modifier = Modifier.Companion
             .fillMaxWidth()
             .clickable { onClick() }
             .padding(vertical = 8.dp),
-        textAlign = TextAlign.Center,
+        textAlign = TextAlign.Companion.Center,
         fontSize = 14.sp
     )
 }

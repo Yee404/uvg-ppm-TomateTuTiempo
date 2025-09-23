@@ -1,4 +1,4 @@
-package com.example.tomatetutiempo.Presentation.Componentes
+package com.example.tomatetutiempo.presentation.components
 
 import android.widget.Toast
 import androidx.compose.foundation.layout.width

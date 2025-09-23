@@ -1,4 +1,4 @@
-package com.example.tomatetutiempo
+package com.example.tomatetutiempo.presentation.components
 
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -20,6 +20,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.unit.dp
+import com.example.tomatetutiempo.R
 
 @Composable
 fun PasswordField(value: String, onValueChange: (String) -> Unit, modifier: Modifier = Modifier) {
@@ -36,11 +37,13 @@ fun PasswordField(value: String, onValueChange: (String) -> Unit, modifier: Modi
             IconButton(onClick = { showPassword = !showPassword }) {
                 Icon(
                     imageVector = if (showPassword) Icons.Default.VisibilityOff else Icons.Default.Visibility,
-                    contentDescription = if (showPassword) stringResource(R.string.hidepass) else stringResource(R.string.showpass)
+                    contentDescription = if (showPassword) stringResource(R.string.hidepass) else stringResource(
+                        R.string.showpass
+                    )
                 )
             }
         },
         shape = RoundedCornerShape(8.dp),
-        visualTransformation = if (showPassword) VisualTransformation.None else PasswordVisualTransformation()
+        visualTransformation = if (showPassword) VisualTransformation.Companion.None else PasswordVisualTransformation()
     )
 }
