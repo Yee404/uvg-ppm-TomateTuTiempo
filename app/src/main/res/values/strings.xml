@@ -1,5 +1,5 @@
 <resources>
-    <!-- Nombre de la aplicación -->
+    <!-- Strings Login -->
     <string name="app_name">TomateTuTiempo</string>
     <string name="bienvenido_a">Bienvenido a</string>
     <string name="tu_tiempo">🍅Tu Tiempo</string>
@@ -22,6 +22,8 @@
     <string name="register">Register</string>
     <string name="navigate_register">Navigate to Register</string>
 
+
+    <!-- Strings pantalla-nuevatarea -->
     <string name="eliminar_tarea">Eliminar Tarea</string>
     <string name="msg_tarea_eliminada">Se Elimino la Tarea</string>
     <string name="fecha_seleccionada">Fecha seleccionada: %1$s</string>
@@ -31,8 +33,8 @@
     <string name="ing_descripcion_de_tarea">Ingresa la descripcion de la tarea</string>
     <string name="titulo">Crea Una Tarea</string>
 
-    <!-- Strings para la pantalla del Temporizador (TimerScreen) -->
 
+    <!-- Strings TimerScreen -->
     <!-- Descripciones de contenido para accesibilidad en TimerControls -->
     <string name="timer_decrease_time_description">Disminuir tiempo</string>
     <string name="timer_pause_timer_description">Pausar temporizador</string>
@@ -49,4 +51,21 @@
 
     <!-- Texto para el botón de finalizar en TimerScreen -->
     <string name="timer_finish_button_text">FINALIZADO</string>
+
+
+    <!-- Strings Calendario -->
+    <string name="calendario_titulo">Calendario</string>
+    <string name="menu_icon_desc">Menú</string>
+    <string name="evento_calculo1">Cálculo 1</string>
+    <string name="evento_hoja_trabajo">Hoja de trabajo 2 - 25 Ejercicios</string>
+    <string name="evento_duracion">2:30 horas</string>
+    <string name="wed_abrev">Wed</string>
+    <string name="thu_abrev">Thu</string>
+    <string name="fri_abrev">Fri</string>
+    <string name="sat_abrev">Sat</string>
+    <string name="dia_miercoles">Miércoles</string>
+    <string name="dia_jueves">Jueves</string>
+    <string name="dia_viernes">Viernes</string>
+    <string name="dia_sabado">Sábado</string>
+
 </resources>
