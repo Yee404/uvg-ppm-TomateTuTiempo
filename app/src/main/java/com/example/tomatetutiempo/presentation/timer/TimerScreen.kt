@@ -2,6 +2,7 @@ package com.example.tomatetutiempo.presentation.timer
 
 import android.util.Log
 import androidx.compose.foundation.BorderStroke
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -44,8 +45,6 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.navigation.NavController
-import androidx.navigation.compose.rememberNavController
 import com.example.tomatetutiempo.R
 import com.example.tomatetutiempo.ui.theme.DarkGreenText
 import com.example.tomatetutiempo.ui.theme.IconColor
@@ -54,13 +53,7 @@ import com.example.tomatetutiempo.ui.theme.TomateTuTiempoTheme
 import kotlinx.coroutines.delay
 import java.util.Locale
 
-/**
- * Formatea un número total de segundos a una cadena de texto en formato HH:MM:SS o MM:SS.
- * Si el tiempo es menor a una hora, se omite la sección de horas (MM:SS).
- *
- * @param totalSeconds El número total de segundos a formatear.
- * @return Una cadena de texto representando el tiempo formateado (e.g., "01:23:45" o "23:45").
- */
+
 fun formatTime(totalSeconds: Int): String {
     val hours = totalSeconds / 3600
     val minutes = (totalSeconds % 3600) / 60
@@ -72,12 +65,6 @@ fun formatTime(totalSeconds: Int): String {
     }
 }
 
-/**
- * Composable que muestra el tiempo del temporizador de forma destacada.
- * Utiliza la función [formatTime] para dar formato al tiempo.
- *
- * @param timeInSeconds El tiempo actual en segundos para mostrar.
- */
 @Composable
 fun TimerDisplay(timeInSeconds: Int) {
     Text(
@@ -89,15 +76,6 @@ fun TimerDisplay(timeInSeconds: Int) {
     )
 }
 
-/**
- * Composable que muestra los controles del temporizador: disminuir tiempo, play/pausa y aumentar tiempo.
- * Los botones de aumentar y disminuir tiempo se deshabilitan cuando el temporizador está en curso.
- *
- * @param isTimerRunning Indica si el temporizador está actualmente en funcionamiento.
- * @param onDecrease Lambda que se invoca cuando se presiona el botón de disminuir tiempo.
- * @param onIncrease Lambda que se invoca cuando se presiona el botón de aumentar tiempo.
- * @param onPlayPause Lambda que se invoca cuando se presiona el botón de play/pausa, alternando el estado del temporizador.
- */
 @Composable
 fun TimerControls(
     isTimerRunning: Boolean,
@@ -145,23 +123,14 @@ fun TimerControls(
     }
 }
 
-/**
- * Pantalla principal del temporizador Pomodoro.
- * Permite al usuario iniciar, pausar y ajustar un temporizador.
- * Muestra información de una tarea de ejemplo y un botón para finalizar la sesión del temporizador.
- *
- * Esta pantalla utiliza un [androidx.compose.material3.Scaffold] para la estructura básica, con una [androidx.compose.material3.TopAppBar]
- * para la navegación hacia atrás y un cuerpo de pantalla que contiene el [TimerDisplay],
- * [TimerControls], información de la tarea y un botón de "Finalizado".
- *
- * El estado del temporizador ([timerValueInSeconds] y [isTimerRunning]) se gestiona con [androidx.compose.runtime.remember] y [androidx.compose.runtime.mutableStateOf].
- * Un [androidx.compose.runtime.LaunchedEffect] se encarga de la lógica de decremento del tiempo cuando el temporizador está activo.
- *
- * @param navController El controlador de navegación de Jetpack Compose, utilizado para la acción de "volver atrás".
- */
+
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun TimerScreen(navController: NavController) {
+fun TimerScreen(
+    taskName: String = "Tarea",
+    onNavigateBack: () -> Unit = {},
+    modifier: Modifier = Modifier
+) {
     var timerValueInSeconds by remember { mutableIntStateOf(4736) } // Valor inicial de ejemplo: 1h 18m 56s
     var isTimerRunning by remember { mutableStateOf(false) }
 
@@ -180,7 +149,7 @@ fun TimerScreen(navController: NavController) {
             TopAppBar(
                 title = { /* No se necesita título para esta pantalla. */ },
                 navigationIcon = {
-                    IconButton(onClick = { navController.popBackStack() }) {
+                    IconButton(onClick = onNavigateBack) {
                         Icon(
                             imageVector = Icons.AutoMirrored.Filled.ArrowBack,
                             contentDescription = stringResource(R.string.timer_back_button_description),
@@ -214,7 +183,7 @@ fun TimerScreen(navController: NavController) {
 
                 // Textos de ejemplo para la tarea.
                 Text(
-                    stringResource(R.string.timer_task_name_example),
+                    taskName, // USAR EL PARÁMETRO taskName EN LUGAR DEL STRING FIJO
                     fontSize = 36.sp,
                     fontWeight = FontWeight.Companion.Bold,
                     color = DarkGreenText
@@ -285,14 +254,13 @@ fun TimerScreen(navController: NavController) {
     }
 }
 
-/**
- * Composable de previsualización para la [TimerScreen].
- * Muestra cómo se verá la pantalla del temporizador en el entorno de diseño de Android Studio.
- */
 @Preview(showBackground = true)
 @Composable
 fun TimerScreenPreview() {
     TomateTuTiempoTheme {
-        TimerScreen(rememberNavController())
+        TimerScreen(
+            taskName = "Calculo 1",
+            onNavigateBack = {}
+        )
     }
 }

@@ -43,7 +43,7 @@ import com.example.tomatetutiempo.R
 import com.example.tomatetutiempo.ui.theme.TomateTuTiempoTheme
 
 @Composable
-fun Login() {
+fun Login(onLoginSuccess: () -> Unit = {}) {
     val context = LocalContext.current
 
     // Estados para los campos de texto
@@ -178,6 +178,7 @@ fun Login() {
                                 val msg =
                                     loginExitosoText.replace("\$rememberMe", rememberMe.toString())
                                 Toast.makeText(context, msg, Toast.LENGTH_SHORT).show()
+                                onLoginSuccess()
                             }
                         }
                     })
@@ -196,7 +197,7 @@ fun Login() {
 
 @Preview(showBackground = true)
 @Composable
-fun LoginPreview() {
+fun LoginPreview(){
     TomateTuTiempoTheme {
         Login()
     }

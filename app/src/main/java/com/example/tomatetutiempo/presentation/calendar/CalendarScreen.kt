@@ -56,7 +56,11 @@ private val sampleDays = listOf(
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun CalendarScreen(modifier: Modifier = Modifier) {
+fun CalendarScreen(
+    onTaskSelected: (String) -> Unit = { _ -> },
+    onNavigateBack: () -> Unit = {},
+    modifier: Modifier = Modifier)
+{
     var selected by remember { mutableStateOf("03") }
 
     Scaffold(
@@ -125,7 +129,8 @@ fun CalendarScreen(modifier: Modifier = Modifier) {
             Card(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(16.dp),
+                    .padding(16.dp)
+                    .clickable { onTaskSelected("Calculo 1") },
                 colors = CardDefaults.cardColors(containerColor = Color.White),
                 elevation = CardDefaults.cardElevation(defaultElevation = 4.dp)
             ) {

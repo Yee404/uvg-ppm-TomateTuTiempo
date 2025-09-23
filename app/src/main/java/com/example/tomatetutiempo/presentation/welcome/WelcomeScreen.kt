@@ -9,9 +9,11 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.example.tomatetutiempo.presentation.theme.WelcomeColors
 import com.example.tomatetutiempo.R
+import com.example.tomatetutiempo.ui.theme.TomateTuTiempoTheme
 
 @Composable
 fun WelcomeScreen(
@@ -62,5 +64,17 @@ fun WelcomeScreen(
                 Spacer(modifier = Modifier.height(24.dp))
             }
         }
+    }
+}
+
+
+@Preview(showBackground = true, showSystemUi = true)
+@Composable
+fun WelcomeScreenFullPreview() {
+    TomateTuTiempoTheme {
+        WelcomeScreen(
+            userName = stringResource(R.string.preview_user_name),
+            profileImageRes = android.R.drawable.ic_menu_camera
+        )
     }
 }

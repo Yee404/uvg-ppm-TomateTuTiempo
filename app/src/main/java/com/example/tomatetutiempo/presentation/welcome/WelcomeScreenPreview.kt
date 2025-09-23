@@ -22,13 +22,3 @@ import com.example.tomatetutiempo.R
 //    }
 //}
 
-@Preview(showBackground = true, showSystemUi = true)
-@Composable
-fun WelcomeScreenFullPreview() {
-    TomateTuTiempoTheme {
-        WelcomeScreen(
-            userName = stringResource(R.string.preview_user_name),
-            profileImageRes = android.R.drawable.ic_menu_camera
-        )
-    }
-}
