@@ -1,3 +1,4 @@
+<!-- app/src/main/res/values/strings.xml -->
 <resources>
     <!-- Strings Login -->
     <string name="app_name">TomateTuTiempo</string>
@@ -68,4 +69,22 @@
     <string name="dia_viernes">Viernes</string>
     <string name="dia_sabado">Sábado</string>
 
+
+    <!-- Strings Principal -->
+    <!-- Welcome Screen - Textos estáticos -->
+    <string name="welcome_greeting">Bienvenida,</string>
+
+    <!-- Menu Items -->
+    <string name="menu_add_task">Añadir tarea</string>
+    <string name="menu_calendar">Calendario</string>
+    <string name="menu_store">Tienda</string>
+    <string name="menu_settings">Ajustes</string>
+    <string name="menu_profile">Perfil</string>
+
+    <!-- Content Descriptions para accesibilidad -->
+    <string name="profile_picture_description">Foto de perfil</string>
+
+    <!-- Preview y desarrollo (opcional, pero buena práctica) -->
+    <string name="preview_user_name">Sara Rodriguez</string>
+    <string name="preview_no_action">Preview - sin acción</string>
 </resources>
