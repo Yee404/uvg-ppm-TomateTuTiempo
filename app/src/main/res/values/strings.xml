@@ -1,90 +1,75 @@
 <!-- app/src/main/res/values/strings.xml -->
 <resources>
-    <!-- Strings Login -->
+    <!-- ==================== Strings Login ==================== -->
     <string name="app_name">TomateTuTiempo</string>
     <string name="bienvenido_a">Bienvenido a</string>
     <string name="tu_tiempo">🍅Tu Tiempo</string>
     <string name="logingoogle">Login with Google</string>
     <string name="loginface">Login with Facebook</string>
-    <string name="or">  OR  </string>
+    <string name="or">OR</string>
     <string name="email">Email</string>
     <string name="password">Password</string>
     <string name="hidepass">Hide password</string>
     <string name="showpass">Show password</string>
     <string name="remember_me">Remember me</string>
-    <string name="forgotpass">Forgot Password?</string>
-    <string name="ingresar_email">Por favor ingrese un email</string>
-    <string name="email_invalido">Por favor ingrese un email válido</string>
-    <string name="ingresar_contrasenna">Por favor ingrese una contraseña</string>
+    <string name="forgotpass">Forgot password?</string>
+    <string name="ingresar_email">Por favor, ingrese un email</string>
+    <string name="email_invalido">Por favor, ingrese un email válido</string>
+    <string name="ingresar_contrasenna">Por favor, ingrese una contraseña</string>
     <string name="contrasenna_invalida">La contraseña debe tener al menos 6 caracteres</string>
     <string name="login_exitoso">¡Login exitoso! Recuerda: $rememberMe</string>
     <string name="login">Login</string>
-    <string name="dont_account">Dont have an account? </string>
-    <string name="register">Register</string>
-    <string name="navigate_register">Navigate to Register</string>
+    <string name="dont_account">¿No tienes una cuenta? </string>
+    <string name="register">Registrarse</string>
+    <string name="navigate_register">Ir a registro</string>
 
-
-    <!-- Strings pantalla-nuevatarea -->
-    <string name="eliminar_tarea">Eliminar Tarea</string>
-    <string name="msg_tarea_eliminada">Se Elimino la Tarea</string>
-    <string name="fecha_seleccionada">Fecha seleccionada: %1$s</string>
-    <string name="seleccionar_fecha">Seleccionar Fecha</string>
+    <!-- ==================== Strings Nueva Tarea ==================== -->
+    <string name="titulo">Crea una tarea</string>
+    <string name="crea_una_nueva_tarea">Crea una nueva tarea</string>
     <string name="ingr_nombre_de_la_tarea">Ingresa el nombre de la tarea</string>
     <string name="ingre_tema_de_tarea">Ingresa el tema de la tarea</string>
-    <string name="ing_descripcion_de_tarea">Ingresa la descripcion de la tarea</string>
-    <string name="titulo">Crea Una Tarea</string>
+    <string name="ing_descripcion_de_tarea">Ingresa la descripción de la tarea</string>
+    <string name="fecha_seleccionada">Fecha seleccionada: %1$s</string>
+    <string name="seleccionar_fecha">Seleccionar fecha</string>
+    <string name="eliminar_tarea">Eliminar tarea</string>
+    <string name="msg_tarea_eliminada">Se eliminó la tarea</string>
 
-
-    <!-- Strings TimerScreen -->
-    <!-- Descripciones de contenido para accesibilidad en TimerControls -->
+    <!-- ==================== Strings TimerScreen ==================== -->
     <string name="timer_decrease_time_description">Disminuir tiempo</string>
     <string name="timer_pause_timer_description">Pausar temporizador</string>
     <string name="timer_start_timer_description">Iniciar temporizador</string>
     <string name="timer_increase_time_description">Aumentar tiempo</string>
-
-    <!-- Descripción de contenido para el botón de navegación superior -->
     <string name="timer_back_button_description">Atrás</string>
-
-    <!-- Textos de ejemplo para la información de la tarea en TimerScreen -->
     <string name="timer_task_name_example">Cálculo I</string>
-    <string name="timer_task_time_example">(2:00pm - 4:00pm)</string>
-    <string name="timer_task_detail_example">Hoja de Trabajo 2</string>
-
-    <!-- Texto para el botón de finalizar en TimerScreen -->
+    <string name="timer_task_time_example">(2:00 pm – 4:00 pm)</string>
+    <string name="timer_task_detail_example">Hoja de trabajo 2</string>
     <string name="timer_finish_button_text">FINALIZADO</string>
 
-
-    <!-- Strings Calendario -->
+    <!-- ==================== Strings Calendario ==================== -->
     <string name="calendario_titulo">Calendario</string>
     <string name="menu_icon_desc">Menú</string>
     <string name="evento_calculo1">Cálculo 1</string>
-    <string name="evento_hoja_trabajo">Hoja de trabajo 2 - 25 Ejercicios</string>
+    <string name="evento_hoja_trabajo">Hoja de trabajo 2 – 25 Ejercicios</string>
     <string name="evento_duracion">2:30 horas</string>
-    <string name="wed_abrev">Wed</string>
-    <string name="thu_abrev">Thu</string>
-    <string name="fri_abrev">Fri</string>
-    <string name="sat_abrev">Sat</string>
     <string name="dia_miercoles">Miércoles</string>
     <string name="dia_jueves">Jueves</string>
     <string name="dia_viernes">Viernes</string>
     <string name="dia_sabado">Sábado</string>
+    <string name="wed_abrev">Wed</string>
+    <string name="thu_abrev">Thu</string>
+    <string name="fri_abrev">Fri</string>
+    <string name="sat_abrev">Sat</string>
 
-
-    <!-- Strings Principal -->
-    <!-- Welcome Screen - Textos estáticos -->
+    <!-- ==================== Strings Welcome / Principal ==================== -->
     <string name="welcome_greeting">Bienvenida,</string>
-
-    <!-- Menu Items -->
     <string name="menu_add_task">Añadir tarea</string>
     <string name="menu_calendar">Calendario</string>
     <string name="menu_store">Tienda</string>
     <string name="menu_settings">Ajustes</string>
     <string name="menu_profile">Perfil</string>
-
-    <!-- Content Descriptions para accesibilidad -->
     <string name="profile_picture_description">Foto de perfil</string>
 
-    <!-- Preview y desarrollo (opcional, pero buena práctica) -->
-    <string name="preview_user_name">Sara Rodriguez</string>
-    <string name="preview_no_action">Preview - sin acción</string>
+    <!-- ==================== Preview y desarrollo ==================== -->
+    <string name="preview_user_name">Sara Rodríguez</string>
+    <string name="preview_no_action">Preview – sin acción</string>
 </resources>
