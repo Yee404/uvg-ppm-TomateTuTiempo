@@ -15,6 +15,8 @@ import com.example.tomatetutiempo.presentation.welcome.WelcomeScreen
 import com.example.tomatetutiempo.presentation.creartarea.PantallaNuevaTarea
 import com.example.tomatetutiempo.presentation.calendar.CalendarScreen
 import com.example.tomatetutiempo.presentation.timer.TimerScreen
+import com.example.tomatetutiempo.presentation.store.StoreScreen
+// import com.example.tomatetutiempo.presentation.profile.PerfilScreen // Descomentar cuando esté lista
 import com.example.tomatetutiempo.ui.theme.TomateTuTiempoTheme
 
 class MainActivity : ComponentActivity() {
@@ -47,9 +49,9 @@ fun NavigationApp() {
             WelcomeScreen(
                 onAddTaskClick = { navController.navigate("nuevaTarea") },
                 onCalendarClick = { navController.navigate("calendar") },
-                onStoreClick = { /* Puedes agregar después */ },
-                onSettingsClick = { /* Puedes agregar después */ },
-                onProfileClick = { /* Puedes agregar después */ }
+                onStoreClick = { navController.navigate("store") },
+                onSettingsClick = { /* Agregar después si es necesario */ },
+                onProfileClick = { navController.navigate("profile") }
             )
         }
 
@@ -74,6 +76,23 @@ fun NavigationApp() {
             TimerScreen(
                 taskName = taskName,
                 onNavigateBack = { navController.popBackStack() }
+            )
+        }
+
+        // Nueva ruta para Store
+        composable("store") {
+            StoreScreen()
+        }
+
+        // ruta para Profile
+        composable("profile") {
+
+            WelcomeScreen(
+                onAddTaskClick = { navController.navigate("nuevaTarea") },
+                onCalendarClick = { navController.navigate("calendar") },
+                onStoreClick = { navController.navigate("store") },
+                onSettingsClick = { },
+                onProfileClick = { }
             )
         }
     }

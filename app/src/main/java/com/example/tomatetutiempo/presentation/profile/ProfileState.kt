@@ -1,2 +1,7 @@
-package com.example.tomatetutiempo.presentation.profile
+package com.example.tomatetutiempo.ui.presentation.profile
 
+data class ProfileState(
+    val isLoading: Boolean = true,
+    val name: String = "",
+    val email: String = ""
+)
