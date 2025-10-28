@@ -16,6 +16,7 @@ import com.example.tomatetutiempo.presentation.creartarea.PantallaNuevaTarea
 import com.example.tomatetutiempo.presentation.calendar.CalendarScreen
 import com.example.tomatetutiempo.presentation.timer.TimerScreen
 import com.example.tomatetutiempo.presentation.store.StoreScreen
+import com.example.tomatetutiempo.ui.presentation.profile.PerfilScreen
 // import com.example.tomatetutiempo.presentation.profile.PerfilScreen // Descomentar cuando esté lista
 import com.example.tomatetutiempo.ui.theme.TomateTuTiempoTheme
 
@@ -33,6 +34,7 @@ class MainActivity : ComponentActivity() {
 
 @Composable
 fun NavigationApp() {
+    //val db = Firebase.firestore
     val navController = rememberNavController()
 
     NavHost(
@@ -87,13 +89,7 @@ fun NavigationApp() {
         // ruta para Profile
         composable("profile") {
 
-            WelcomeScreen(
-                onAddTaskClick = { navController.navigate("nuevaTarea") },
-                onCalendarClick = { navController.navigate("calendar") },
-                onStoreClick = { navController.navigate("store") },
-                onSettingsClick = { },
-                onProfileClick = { }
-            )
+            PerfilScreen()
         }
     }
 }
