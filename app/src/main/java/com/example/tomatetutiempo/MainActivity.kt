@@ -17,7 +17,6 @@ import com.example.tomatetutiempo.presentation.calendar.CalendarScreen
 import com.example.tomatetutiempo.presentation.timer.TimerScreen
 import com.example.tomatetutiempo.presentation.store.StoreScreen
 import com.example.tomatetutiempo.ui.presentation.profile.PerfilScreen
-// import com.example.tomatetutiempo.presentation.profile.PerfilScreen // Descomentar cuando esté lista
 import com.example.tomatetutiempo.ui.theme.TomateTuTiempoTheme
 
 class MainActivity : ComponentActivity() {
@@ -34,7 +33,6 @@ class MainActivity : ComponentActivity() {
 
 @Composable
 fun NavigationApp() {
-    //val db = Firebase.firestore
     val navController = rememberNavController()
 
     NavHost(
@@ -52,7 +50,6 @@ fun NavigationApp() {
                 onAddTaskClick = { navController.navigate("nuevaTarea") },
                 onCalendarClick = { navController.navigate("calendar") },
                 onStoreClick = { navController.navigate("store") },
-                onSettingsClick = { /* Agregar después si es necesario */ },
                 onProfileClick = { navController.navigate("profile") }
             )
         }
@@ -81,15 +78,25 @@ fun NavigationApp() {
             )
         }
 
-        // Nueva ruta para Store
         composable("store") {
             StoreScreen()
         }
 
-        // ruta para Profile
         composable("profile") {
-
-            PerfilScreen()
+            PerfilScreen(
+                onEditProfileClick = {
+                    // TODO: Navegar a editar perfil cuando esté listo
+                },
+                onSettingsClick = {
+                    // TODO: Navegar a ajustes cuando esté listo
+                },
+                onLogoutClick = {
+                    // Regresar al login
+                    navController.navigate("login") {
+                        popUpTo("welcome") { inclusive = true }
+                    }
+                }
+            )
         }
     }
 }

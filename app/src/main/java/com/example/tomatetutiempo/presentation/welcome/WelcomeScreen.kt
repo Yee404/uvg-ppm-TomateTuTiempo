@@ -18,11 +18,10 @@ import com.example.tomatetutiempo.ui.theme.TomateTuTiempoTheme
 @Composable
 fun WelcomeScreen(
     userName: String = stringResource(R.string.preview_user_name),
-    profileImageRes: Int = android.R.drawable.ic_menu_camera, // Placeholder
+    profileImageRes: Int = android.R.drawable.ic_menu_camera,
     onAddTaskClick: () -> Unit = {},
     onCalendarClick: () -> Unit = {},
     onStoreClick: () -> Unit = {},
-    onSettingsClick: () -> Unit = {},
     onProfileClick: () -> Unit = {},
     modifier: Modifier = Modifier
 ) {
@@ -52,12 +51,11 @@ fun WelcomeScreen(
 
                 Spacer(modifier = Modifier.height(48.dp))
 
-                // Sección de botones del menú
+                // Sección de botones del menú (sin Ajustes)
                 MenuSection(
                     onAddTaskClick = onAddTaskClick,
                     onCalendarClick = onCalendarClick,
                     onStoreClick = onStoreClick,
-                    onSettingsClick = onSettingsClick,
                     onProfileClick = onProfileClick
                 )
 

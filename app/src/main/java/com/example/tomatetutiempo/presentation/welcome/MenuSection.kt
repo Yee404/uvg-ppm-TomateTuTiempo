@@ -23,7 +23,6 @@ fun MenuSection(
     onAddTaskClick: () -> Unit = {},
     onCalendarClick: () -> Unit = {},
     onStoreClick: () -> Unit = {},
-    onSettingsClick: () -> Unit = {},
     onProfileClick: () -> Unit = {}
 ) {
     val menuItems = listOf(
@@ -41,11 +40,6 @@ fun MenuSection(
             icon = Icons.Default.ShoppingCart,
             text = stringResource(R.string.menu_store),
             onClick = onStoreClick
-        ),
-        MenuItem(
-            icon = Icons.Default.Settings,
-            text = stringResource(R.string.menu_settings),
-            onClick = onSettingsClick
         ),
         MenuItem(
             icon = Icons.Default.Person,
