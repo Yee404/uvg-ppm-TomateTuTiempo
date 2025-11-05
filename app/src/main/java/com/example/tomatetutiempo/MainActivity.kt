@@ -17,6 +17,7 @@ import com.example.tomatetutiempo.presentation.creartarea.PantallaCrearTarea
 import com.example.tomatetutiempo.presentation.creartarea.PantallaDetalleTarea
 import com.example.tomatetutiempo.presentation.creartarea.CreateTaskViewModel
 import com.example.tomatetutiempo.presentation.calendar.CalendarScreen
+import com.example.tomatetutiempo.presentation.calendar.CalendarViewModel
 import com.example.tomatetutiempo.presentation.timer.TimerScreen
 import com.example.tomatetutiempo.presentation.store.StoreScreen
 import com.example.tomatetutiempo.ui.presentation.profile.PerfilScreen
@@ -38,7 +39,8 @@ class MainActivity : ComponentActivity() {
 fun NavigationApp() {
     val navController = rememberNavController()
 
-
+    // ViewModel compartido para las pantallas de crear tarea
+    // Esto asegura que el estado se mantenga entre navegaciones
     val createTaskViewModel: CreateTaskViewModel = viewModel()
 
     NavHost(

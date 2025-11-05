@@ -4,6 +4,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.tomatetutiempo.data.model.Curso
 import com.example.tomatetutiempo.data.model.Tarea
+import com.example.tomatetutiempo.data.repository.TaskRepository
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -34,7 +35,8 @@ class CreateTaskViewModel : ViewModel() {
 
     private fun cargarCursos() {
         viewModelScope.launch {
-
+            // Por ahora, cursos de ejemplo
+            // Más adelante esto se conectará con Firebase/Repository
             val cursosEjemplo = listOf(
                 Curso(id = "1", nombre = "Cálculo 1", color = "#4CAF50"),
                 Curso(id = "2", nombre = "Física 1", color = "#2196F3"),
@@ -135,7 +137,8 @@ class CreateTaskViewModel : ViewModel() {
             descripcion = state.descripcion
         )
 
-        // TODO: Guardar en Firebase/Repository
+        // Guardar en el repositorio
+        TaskRepository.agregarTarea(nuevaTarea)
         println("Tarea guardada: $nuevaTarea")
 
         limpiarFormulario()

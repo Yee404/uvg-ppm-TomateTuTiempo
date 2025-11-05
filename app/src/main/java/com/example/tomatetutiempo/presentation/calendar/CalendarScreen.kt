@@ -3,82 +3,54 @@ package com.example.tomatetutiempo.presentation.calendar
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Menu
-import androidx.compose.material3.Card
-import androidx.compose.material3.CardDefaults
-import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
-import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Text
-import androidx.compose.material3.TopAppBar
-import androidx.compose.material3.TopAppBarDefaults
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
+import androidx.compose.material3.*
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.example.tomatetutiempo.R
+import androidx.compose.ui.window.Dialog
+import androidx.lifecycle.viewmodel.compose.viewModel
+import com.example.tomatetutiempo.data.model.Tarea
 
-// Colores personalizados
-private val Green = Color(0xFF2E7D32)
-private val GreenLight = Color(0xFFE8F5E9)
-private val TextGray = Color(0xFF4A4A4A)
-private val MutedGray = Color(0xFF777777)
-
-// Datos de ejemplo
-data class DayChip(val day: String, val dowStringRes: Int, val marks: String = "")
-
-private val sampleDays = listOf(
-    DayChip("03", R.string.dia_miercoles, "*"),
-    DayChip("04", R.string.dia_jueves, "*"),
-    DayChip("05", R.string.dia_viernes, "*"),
-    DayChip("06", R.string.dia_sabado, "*"),
-)
+// Colores
+private val VerdePrincipal = Color(0xFF5FA777)
+private val VerdeClaro = Color(0xFFE8F5E9)
+private val VerdeFondo = Color(0xFFF1F8F4)
+private val TextoGris = Color(0xFF4A4A4A)
+private val TextoGrisClaro = Color(0xFF757575)
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun CalendarScreen(
+    viewModel: CalendarViewModel = viewModel(),
     onTaskSelected: (String) -> Unit = { _ -> },
     onNavigateBack: () -> Unit = {},
-    modifier: Modifier = Modifier)
-{
-    var selected by remember { mutableStateOf("03") }
+    modifier: Modifier = Modifier
+) {
+    val uiState by viewModel.uiState.collectAsState()
 
     Scaffold(
         topBar = {
             TopAppBar(
-                colors = TopAppBarDefaults.topAppBarColors(containerColor = GreenLight),
+                colors = TopAppBarDefaults.topAppBarColors(
+                    containerColor = Color.White
+                ),
                 title = {
                     Text(
-                        text = stringResource(R.string.calendario_titulo),
-                        color = Green,
+                        text = "Calendario",
+                        color = VerdePrincipal,
                         fontWeight = FontWeight.SemiBold,
-                        fontSize = 18.sp
+                        fontSize = 20.sp
                     )
-                },
-                navigationIcon = {
-                    IconButton(onClick = { }) {
-                        Icon(imageVector = Icons.Default.Menu, contentDescription = stringResource(R.string.menu_icon_desc))
-                    }
                 }
             )
         },
@@ -87,70 +59,262 @@ fun CalendarScreen(
         Column(
             modifier = Modifier
                 .fillMaxSize()
-                .background(GreenLight)
+                .background(VerdeFondo)
                 .padding(padding)
         ) {
-            // Fila de días
+            // Fila de días (horizontal scroll)
             LazyRow(
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(16.dp),
-                horizontalArrangement = Arrangement.spacedBy(8.dp)
+                horizontalArrangement = Arrangement.spacedBy(12.dp)
             ) {
-                items(sampleDays) { d ->
-                    Column(
-                        modifier = Modifier
-                            .clip(RoundedCornerShape(8.dp))
-                            .background(if (d.day == selected) Green else Color.White)
-                            .border(
-                                1.dp,
-                                Green,
-                                RoundedCornerShape(8.dp)
-                            )
-                            .clickable { selected = d.day }
-                            .padding(12.dp),
-                        horizontalAlignment = Alignment.CenterHorizontally
-                    ) {
-                        Text(
-                            text = d.day,
-                            color = if (d.day == selected) Color.White else TextGray,
-                            fontWeight = FontWeight.Bold
-                        )
-                        Text(
-                            text = stringResource(d.dowStringRes),
-                            color = if (d.day == selected) Color.White else MutedGray,
-                            fontSize = 12.sp
+                items(uiState.dias) { dia ->
+                    DayChip(
+                        dia = dia,
+                        isSelected = dia.fecha == uiState.fechaSeleccionada,
+                        onClick = { viewModel.seleccionarDia(dia.fecha) }
+                    )
+                }
+            }
+
+            // Lista de tareas del día seleccionado
+            if (uiState.tareasDelDia.isEmpty()) {
+                // Mensaje cuando no hay tareas
+                Box(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(32.dp),
+                    contentAlignment = Alignment.Center
+                ) {
+                    Text(
+                        text = "No hay tareas para este día",
+                        color = TextoGrisClaro,
+                        fontSize = 16.sp
+                    )
+                }
+            } else {
+                LazyColumn(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .padding(horizontal = 16.dp),
+                    verticalArrangement = Arrangement.spacedBy(12.dp)
+                ) {
+                    items(uiState.tareasDelDia) { tarea ->
+                        TarjetaTarea(
+                            tarea = tarea,
+                            onClick = { viewModel.mostrarDetalleTarea(tarea) }
                         )
                     }
                 }
             }
+        }
+    }
 
-            // Tarjeta de evento
-            Card(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(16.dp)
-                    .clickable { onTaskSelected("Calculo 1") },
-                colors = CardDefaults.cardColors(containerColor = Color.White),
-                elevation = CardDefaults.cardElevation(defaultElevation = 4.dp)
-            ) {
-                Column(modifier = Modifier.padding(16.dp)) {
-                    Text(stringResource(R.string.evento_calculo1), color = Green, fontWeight = FontWeight.Bold)
-                    Text(stringResource(R.string.evento_hoja_trabajo), color = TextGray)
-                    Text(stringResource(R.string.evento_duracion), color = MutedGray, fontSize = 12.sp)
-                }
+    // Dialog de detalle de tarea
+    if (uiState.mostrarDialogDetalle && uiState.tareaSeleccionada != null) {
+        DialogDetalleTarea(
+            tarea = uiState.tareaSeleccionada!!,
+            onDismiss = { viewModel.cerrarDialogDetalle() },
+            onIniciarTarea = {
+                viewModel.cerrarDialogDetalle()
+                onTaskSelected(uiState.tareaSeleccionada!!.id)
             }
+        )
+    }
+}
+
+@Composable
+fun DayChip(
+    dia: DiaCalendario,
+    isSelected: Boolean,
+    onClick: () -> Unit
+) {
+    Column(
+        modifier = Modifier
+            .width(80.dp)
+            .clip(RoundedCornerShape(12.dp))
+            .background(if (isSelected) VerdePrincipal else Color.White)
+            .border(
+                width = if (dia.tieneTareas) 2.dp else 1.dp,
+                color = if (isSelected) VerdePrincipal else if (dia.tieneTareas) VerdePrincipal.copy(alpha = 0.5f) else Color.LightGray,
+                shape = RoundedCornerShape(12.dp)
+            )
+            .clickable(onClick = onClick)
+            .padding(12.dp),
+        horizontalAlignment = Alignment.CenterHorizontally
+    ) {
+        Text(
+            text = dia.dia,
+            color = if (isSelected) Color.White else TextoGris,
+            fontWeight = FontWeight.Bold,
+            fontSize = 20.sp
+        )
+        Text(
+            text = dia.diaSemana.take(3), // Primeras 3 letras (Lun, Mar, etc)
+            color = if (isSelected) Color.White.copy(alpha = 0.9f) else TextoGrisClaro,
+            fontSize = 12.sp
+        )
+
+        // Indicador de que hay tareas
+        if (dia.tieneTareas && !isSelected) {
+            Spacer(modifier = Modifier.height(4.dp))
+            Box(
+                modifier = Modifier
+                    .size(6.dp)
+                    .background(VerdePrincipal, shape = RoundedCornerShape(3.dp))
+            )
         }
     }
 }
 
 @Composable
-fun Greeting(name: String, modifier: Modifier = Modifier) {
-    CalendarScreen(modifier = modifier)
+fun TarjetaTarea(
+    tarea: Tarea,
+    onClick: () -> Unit
+) {
+    Card(
+        modifier = Modifier
+            .fillMaxWidth()
+            .clickable(onClick = onClick),
+        colors = CardDefaults.cardColors(
+            containerColor = Color.White
+        ),
+        elevation = CardDefaults.cardElevation(defaultElevation = 2.dp),
+        shape = RoundedCornerShape(12.dp)
+    ) {
+        Column(
+            modifier = Modifier.padding(16.dp)
+        ) {
+            Text(
+                text = tarea.cursoNombre,
+                color = VerdePrincipal,
+                fontWeight = FontWeight.Bold,
+                fontSize = 18.sp
+            )
+            Spacer(modifier = Modifier.height(4.dp))
+            Text(
+                text = tarea.nombre,
+                color = TextoGris,
+                fontSize = 16.sp
+            )
+            Spacer(modifier = Modifier.height(8.dp))
+            Text(
+                text = "${tarea.horasNecesarias} ${if (tarea.horasNecesarias == 1) "hora" else "horas"}",
+                color = TextoGrisClaro,
+                fontSize = 14.sp
+            )
+        }
+    }
 }
 
-@Preview(showBackground = true)
 @Composable
-fun PreviewCalendar() {
-    CalendarScreen()
+fun DialogDetalleTarea(
+    tarea: Tarea,
+    onDismiss: () -> Unit,
+    onIniciarTarea: () -> Unit
+) {
+    Dialog(onDismissRequest = onDismiss) {
+        Card(
+            modifier = Modifier
+                .fillMaxWidth()
+                .wrapContentHeight(),
+            shape = RoundedCornerShape(16.dp),
+            colors = CardDefaults.cardColors(
+                containerColor = Color.White
+            ),
+            elevation = CardDefaults.cardElevation(defaultElevation = 8.dp)
+        ) {
+            Column(
+                modifier = Modifier.padding(24.dp)
+            ) {
+                // Título del curso
+                Text(
+                    text = tarea.cursoNombre,
+                    fontSize = 24.sp,
+                    fontWeight = FontWeight.Bold,
+                    color = VerdePrincipal
+                )
+
+                Spacer(modifier = Modifier.height(8.dp))
+
+                // Nombre de la tarea
+                Text(
+                    text = tarea.nombre,
+                    fontSize = 18.sp,
+                    fontWeight = FontWeight.Medium,
+                    color = TextoGris
+                )
+
+                Spacer(modifier = Modifier.height(16.dp))
+
+                // Horas necesarias
+                Row(
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    Text(
+                        text = "Tiempo estimado: ",
+                        fontSize = 14.sp,
+                        color = TextoGrisClaro
+                    )
+                    Text(
+                        text = "${tarea.horasNecesarias} ${if (tarea.horasNecesarias == 1) "hora" else "horas"}",
+                        fontSize = 14.sp,
+                        fontWeight = FontWeight.SemiBold,
+                        color = VerdePrincipal
+                    )
+                }
+
+                // Descripción (si existe)
+                if (tarea.descripcion.isNotBlank()) {
+                    Spacer(modifier = Modifier.height(12.dp))
+                    Text(
+                        text = "Descripción:",
+                        fontSize = 14.sp,
+                        fontWeight = FontWeight.Medium,
+                        color = TextoGris
+                    )
+                    Spacer(modifier = Modifier.height(4.dp))
+                    Text(
+                        text = tarea.descripcion,
+                        fontSize = 14.sp,
+                        color = TextoGrisClaro,
+                        lineHeight = 20.sp
+                    )
+                }
+
+                Spacer(modifier = Modifier.height(24.dp))
+
+                // Botones
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.spacedBy(12.dp)
+                ) {
+                    // Botón cancelar
+                    OutlinedButton(
+                        onClick = onDismiss,
+                        modifier = Modifier.weight(1f),
+                        colors = ButtonDefaults.outlinedButtonColors(
+                            contentColor = TextoGris
+                        ),
+                        shape = RoundedCornerShape(8.dp)
+                    ) {
+                        Text("Cancelar")
+                    }
+
+                    // Botón iniciar tarea
+                    Button(
+                        onClick = onIniciarTarea,
+                        modifier = Modifier.weight(1f),
+                        colors = ButtonDefaults.buttonColors(
+                            containerColor = VerdePrincipal
+                        ),
+                        shape = RoundedCornerShape(8.dp)
+                    ) {
+                        Text("Iniciar tarea")
+                    }
+                }
+            }
+        }
+    }
 }
