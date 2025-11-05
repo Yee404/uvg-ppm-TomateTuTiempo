@@ -5,6 +5,7 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.compose.runtime.Composable
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
@@ -12,7 +13,9 @@ import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
 import com.example.tomatetutiempo.presentation.login.Login
 import com.example.tomatetutiempo.presentation.welcome.WelcomeScreen
-import com.example.tomatetutiempo.presentation.creartarea.PantallaNuevaTarea
+import com.example.tomatetutiempo.presentation.creartarea.PantallaCrearTarea
+import com.example.tomatetutiempo.presentation.creartarea.PantallaDetalleTarea
+import com.example.tomatetutiempo.presentation.creartarea.CreateTaskViewModel
 import com.example.tomatetutiempo.presentation.calendar.CalendarScreen
 import com.example.tomatetutiempo.presentation.timer.TimerScreen
 import com.example.tomatetutiempo.presentation.store.StoreScreen
@@ -35,6 +38,9 @@ class MainActivity : ComponentActivity() {
 fun NavigationApp() {
     val navController = rememberNavController()
 
+
+    val createTaskViewModel: CreateTaskViewModel = viewModel()
+
     NavHost(
         navController = navController,
         startDestination = "login"
@@ -47,15 +53,44 @@ fun NavigationApp() {
 
         composable("welcome") {
             WelcomeScreen(
-                onAddTaskClick = { navController.navigate("nuevaTarea") },
+                onAddTaskClick = {
+                    // Limpiar el formulario al entrar
+                    createTaskViewModel.limpiarFormulario()
+                    navController.navigate("crearTarea")
+                },
                 onCalendarClick = { navController.navigate("calendar") },
                 onStoreClick = { navController.navigate("store") },
                 onProfileClick = { navController.navigate("profile") }
             )
         }
 
-        composable("nuevaTarea") {
-            PantallaNuevaTarea()
+        // Pantalla de selección de curso (lista de cursos)
+        composable("crearTarea") {
+            PantallaCrearTarea(
+                viewModel = createTaskViewModel,
+                onNavigateBack = {
+                    navController.popBackStack()
+                },
+                onCursoSeleccionado = {
+                    navController.navigate("detalleTarea")
+                }
+            )
+        }
+
+        // Pantalla de detalles de la tarea
+        composable("detalleTarea") {
+            PantallaDetalleTarea(
+                viewModel = createTaskViewModel,
+                onNavigateBack = {
+                    navController.popBackStack()
+                },
+                onTareaGuardada = {
+                    // Volver a welcome después de guardar
+                    navController.navigate("welcome") {
+                        popUpTo("crearTarea") { inclusive = true }
+                    }
+                }
+            )
         }
 
         composable("calendar") {
@@ -91,7 +126,7 @@ fun NavigationApp() {
                     // TODO: Navegar a ajustes cuando esté listo
                 },
                 onLogoutClick = {
-                    // Regresar al login
+                    // Regresar al login y limpiar el stack
                     navController.navigate("login") {
                         popUpTo("welcome") { inclusive = true }
                     }

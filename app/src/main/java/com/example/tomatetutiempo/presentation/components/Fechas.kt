@@ -11,13 +11,14 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import java.util.Calendar
 import android.app.DatePickerDialog
-import android.widget.DatePicker
 import androidx.compose.ui.res.stringResource
 import com.example.tomatetutiempo.R
 import com.example.tomatetutiempo.ui.theme.Naranja
 
 @Composable
-fun SelectorFecha() {
+fun SelectorFecha(
+    onFechaSeleccionada: ((Long) -> Unit)? = null
+) {
     val contexto = LocalContext.current
     var fechaSeleccionada by remember { mutableStateOf("") }
 
@@ -26,13 +27,35 @@ fun SelectorFecha() {
     val mes = calendario.get(Calendar.MONTH)
     val dia = calendario.get(Calendar.DAY_OF_MONTH)
 
+    // Obtener fecha actual en milisegundos (inicio del día)
+    val fechaActual = remember {
+        Calendar.getInstance().apply {
+            set(Calendar.HOUR_OF_DAY, 0)
+            set(Calendar.MINUTE, 0)
+            set(Calendar.SECOND, 0)
+            set(Calendar.MILLISECOND, 0)
+        }.timeInMillis
+    }
+
     val datePickerDialog = DatePickerDialog(
         contexto,
-        { _: DatePicker, year: Int, month: Int, dayOfMonth: Int ->
+        { _, year, month, dayOfMonth ->
             fechaSeleccionada = "$dayOfMonth/${month + 1}/$year"
+
+            // Callback con timestamp en milisegundos
+            onFechaSeleccionada?.let {
+                val selectedCalendar = Calendar.getInstance().apply {
+                    set(year, month, dayOfMonth, 0, 0, 0)
+                    set(Calendar.MILLISECOND, 0)
+                }
+                it(selectedCalendar.timeInMillis)
+            }
         },
         annio, mes, dia
     )
+
+    // No permitir seleccionar fechas anteriores a hoy
+    datePickerDialog.datePicker.minDate = fechaActual
 
     Column(modifier = Modifier.padding(16.dp)) {
         Button(
