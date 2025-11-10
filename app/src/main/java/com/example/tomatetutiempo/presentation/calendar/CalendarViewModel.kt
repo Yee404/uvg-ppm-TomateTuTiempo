@@ -23,7 +23,8 @@ data class CalendarUiState(
     val fechaSeleccionada: Long = 0L,
     val tareasDelDia: List<Tarea> = emptyList(),
     val tareaSeleccionada: Tarea? = null,
-    val mostrarDialogDetalle: Boolean = false
+    val mostrarDialogDetalle: Boolean = false,
+    val mostrarDialogEditar: Boolean = false
 )
 
 class CalendarViewModel : ViewModel() {
@@ -118,5 +119,30 @@ class CalendarViewModel : ViewModel() {
             tareaSeleccionada = null,
             mostrarDialogDetalle = false
         )
+    }
+
+    fun mostrarDialogEditarTarea(tarea: Tarea) {
+        _uiState.value = _uiState.value.copy(
+            tareaSeleccionada = tarea,
+            mostrarDialogEditar = true
+        )
+    }
+
+    fun cerrarDialogEditar() {
+        _uiState.value = _uiState.value.copy(
+            tareaSeleccionada = null,
+            mostrarDialogEditar = false
+        )
+    }
+
+    fun actualizarTarea(nombre: String, horas: Int, descripcion: String) {
+        _uiState.value.tareaSeleccionada?.let { tarea ->
+            TaskRepository.actualizarTarea(
+                tareaId = tarea.id,
+                nombre = nombre,
+                horasNecesarias = horas,
+                descripcion = descripcion
+            )
+        }
     }
 }

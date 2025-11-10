@@ -21,6 +21,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.tomatetutiempo.data.repository.TaskRepository
+import com.example.tomatetutiempo.data.repository.UserStatsRepository
 import kotlinx.coroutines.delay
 import java.text.SimpleDateFormat
 import java.util.*
@@ -48,6 +49,7 @@ fun TimerScreen(
 
     var timerValueInSeconds by remember { mutableIntStateOf(tiempoInicialSegundos) }
     var isTimerRunning by remember { mutableStateOf(false) }
+    var mostrarDialogPuntos by remember { mutableStateOf(false) }
 
     // Efecto para el temporizador
     LaunchedEffect(key1 = timerValueInSeconds, key2 = isTimerRunning) {
@@ -209,9 +211,13 @@ fun TimerScreen(
                 onClick = {
                     isTimerRunning = false
                     tarea?.let {
+                        // Marcar tarea como completada
                         TaskRepository.marcarTareaComoCompletada(it.id)
+                        // Sumar puntos y racha
+                        UserStatsRepository.onTaskCompleted()
                     }
-                    onNavigateBack()
+                    // Mostrar dialog de puntos ganados
+                    mostrarDialogPuntos = true
                 },
                 modifier = Modifier
                     .fillMaxWidth()
@@ -236,6 +242,84 @@ fun TimerScreen(
             }
         }
     }
+
+    // Dialog de puntos ganados
+    if (mostrarDialogPuntos) {
+        DialogPuntosGanados(
+            onDismiss = {
+                mostrarDialogPuntos = false
+                onNavigateBack()
+            }
+        )
+    }
+}
+
+@Composable
+fun DialogPuntosGanados(
+    onDismiss: () -> Unit
+) {
+    AlertDialog(
+        onDismissRequest = onDismiss,
+        containerColor = Color.White,
+        title = {
+            Column(
+                horizontalAlignment = Alignment.CenterHorizontally,
+                modifier = Modifier.fillMaxWidth()
+            ) {
+                Text(
+                    text = "🎉",
+                    fontSize = 48.sp
+                )
+                Spacer(modifier = Modifier.height(8.dp))
+                Text(
+                    text = "¡Tarea Completada!",
+                    fontWeight = FontWeight.Bold,
+                    fontSize = 20.sp,
+                    color = VerdeOscuro
+                )
+            }
+        },
+        text = {
+            Column(
+                horizontalAlignment = Alignment.CenterHorizontally,
+                modifier = Modifier.fillMaxWidth()
+            ) {
+                Text(
+                    text = "Has ganado",
+                    fontSize = 16.sp,
+                    color = TextoGris
+                )
+                Spacer(modifier = Modifier.height(8.dp))
+                Row(
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    Text(
+                        text = "💎",
+                        fontSize = 24.sp
+                    )
+                    Spacer(modifier = Modifier.width(8.dp))
+                    Text(
+                        text = "+300",
+                        fontSize = 32.sp,
+                        fontWeight = FontWeight.Bold,
+                        color = VerdeOscuro
+                    )
+                }
+            }
+        },
+        confirmButton = {
+            Button(
+                onClick = onDismiss,
+                colors = ButtonDefaults.buttonColors(
+                    containerColor = VerdeOscuro
+                ),
+                modifier = Modifier.fillMaxWidth(),
+                shape = RoundedCornerShape(8.dp)
+            ) {
+                Text("¡Genial!")
+            }
+        }
+    )
 }
 
 private fun formatTime(totalSeconds: Int): String {

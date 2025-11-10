@@ -12,6 +12,7 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
 import com.example.tomatetutiempo.presentation.login.Login
+import com.example.tomatetutiempo.presentation.register.RegisterScreen
 import com.example.tomatetutiempo.presentation.welcome.WelcomeScreen
 import com.example.tomatetutiempo.presentation.creartarea.PantallaCrearTarea
 import com.example.tomatetutiempo.presentation.creartarea.PantallaDetalleTarea
@@ -40,7 +41,6 @@ fun NavigationApp() {
     val navController = rememberNavController()
 
     // ViewModel compartido para las pantallas de crear tarea
-    // Esto asegura que el estado se mantenga entre navegaciones
     val createTaskViewModel: CreateTaskViewModel = viewModel()
 
     NavHost(
@@ -49,14 +49,26 @@ fun NavigationApp() {
     ) {
         composable("login") {
             Login(
-                onLoginSuccess = { navController.navigate("welcome") }
+                onLoginSuccess = { navController.navigate("welcome") },
+                onRegisterClick = { navController.navigate("register") }
+            )
+        }
+
+        composable("register") {
+            RegisterScreen(
+                onRegisterSuccess = {
+                    // Después del registro exitoso, ir a welcome
+                    navController.navigate("welcome") {
+                        popUpTo("login") { inclusive = true }
+                    }
+                },
+                onNavigateBack = { navController.popBackStack() }
             )
         }
 
         composable("welcome") {
             WelcomeScreen(
                 onAddTaskClick = {
-                    // Limpiar el formulario al entrar
                     createTaskViewModel.limpiarFormulario()
                     navController.navigate("crearTarea")
                 },
@@ -66,7 +78,6 @@ fun NavigationApp() {
             )
         }
 
-        // Pantalla de selección de curso (lista de cursos)
         composable("crearTarea") {
             PantallaCrearTarea(
                 viewModel = createTaskViewModel,
@@ -79,7 +90,6 @@ fun NavigationApp() {
             )
         }
 
-        // Pantalla de detalles de la tarea
         composable("detalleTarea") {
             PantallaDetalleTarea(
                 viewModel = createTaskViewModel,
@@ -87,7 +97,6 @@ fun NavigationApp() {
                     navController.popBackStack()
                 },
                 onTareaGuardada = {
-                    // Volver a welcome después de guardar
                     navController.navigate("welcome") {
                         popUpTo("crearTarea") { inclusive = true }
                     }
@@ -128,7 +137,6 @@ fun NavigationApp() {
                     // TODO: Navegar a ajustes cuando esté listo
                 },
                 onLogoutClick = {
-                    // Regresar al login y limpiar el stack
                     navController.navigate("login") {
                         popUpTo("welcome") { inclusive = true }
                     }

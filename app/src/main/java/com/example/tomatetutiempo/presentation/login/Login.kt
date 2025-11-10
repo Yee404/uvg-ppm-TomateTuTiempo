@@ -43,6 +43,7 @@ import com.example.tomatetutiempo.ui.theme.TomateTuTiempoTheme
 @Composable
 fun Login(
     onLoginSuccess: () -> Unit = {},
+    onRegisterClick: () -> Unit = {},
     viewModel: LoginViewModel = viewModel()
 ) {
     val context = LocalContext.current
@@ -87,7 +88,7 @@ fun Login(
         onSocialGoogleClick = { Toast.makeText(context, "Función no implementada", Toast.LENGTH_SHORT).show() },
         onSocialFacebookClick = { Toast.makeText(context, "Función no implementada", Toast.LENGTH_SHORT).show() },
         onForgotClick = { Toast.makeText(context, "Contraseña olvidada", Toast.LENGTH_SHORT).show() },
-        onRegisterClick = { Toast.makeText(context, "Navegar a Registro", Toast.LENGTH_SHORT).show() }
+        onRegisterClick = onRegisterClick
     )
 }
 
@@ -140,7 +141,6 @@ fun LoginContent(
                     Spacer(Modifier.height(12.dp))
                     PasswordField(value = password, onValueChange = onPasswordChange)
                     Spacer(Modifier.height(8.dp))
-                    // AQUÍ ESTABA EL ERROR. AHORA ESTÁ CORREGIDO.
                     RememberForgotRow(remember = rememberMe, onRememberChange = onRememberChange, onForgot = onForgotClick)
                     Spacer(Modifier.height(16.dp))
                     DarkGreenButton(text = stringResource(R.string.login), onClick = onLoginClick)
@@ -167,27 +167,6 @@ fun LoginPreview() {
     TomateTuTiempoTheme {
         LoginContent(
             uiState = LoginUiState(isLoading = false),
-            email = "test@correo.com",
-            password = "password",
-            rememberMe = true,
-            onEmailChange = {},
-            onPasswordChange = {},
-            onRememberChange = {},
-            onLoginClick = {},
-            onSocialGoogleClick = {},
-            onSocialFacebookClick = {},
-            onForgotClick = {},
-            onRegisterClick = {}
-        )
-    }
-}
-
-@Preview(showBackground = true, name = "Estado de Carga")
-@Composable
-fun LoginLoadingPreview() {
-    TomateTuTiempoTheme {
-        LoginContent(
-            uiState = LoginUiState(isLoading = true),
             email = "test@correo.com",
             password = "password",
             rememberMe = true,

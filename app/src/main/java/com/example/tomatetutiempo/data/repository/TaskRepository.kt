@@ -36,6 +36,25 @@ object TaskRepository {
         }
     }
 
+    fun actualizarTarea(
+        tareaId: String,
+        nombre: String,
+        horasNecesarias: Int,
+        descripcion: String
+    ) {
+        _tareas.value = _tareas.value.map { tarea ->
+            if (tarea.id == tareaId) {
+                tarea.copy(
+                    nombre = nombre,
+                    horasNecesarias = horasNecesarias,
+                    descripcion = descripcion
+                )
+            } else {
+                tarea
+            }
+        }
+    }
+
     fun eliminarTarea(tareaId: String) {
         _tareas.value = _tareas.value.filter { it.id != tareaId }
     }

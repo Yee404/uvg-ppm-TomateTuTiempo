@@ -8,6 +8,9 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.CheckCircle
+import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -15,6 +18,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
@@ -103,7 +107,8 @@ fun CalendarScreen(
                     items(uiState.tareasDelDia) { tarea ->
                         TarjetaTarea(
                             tarea = tarea,
-                            onClick = { viewModel.mostrarDetalleTarea(tarea) }
+                            onClick = { viewModel.mostrarDetalleTarea(tarea) },
+                            onEditClick = { viewModel.mostrarDialogEditarTarea(tarea) }
                         )
                     }
                 }
@@ -119,6 +124,17 @@ fun CalendarScreen(
             onIniciarTarea = {
                 viewModel.cerrarDialogDetalle()
                 onTaskSelected(uiState.tareaSeleccionada!!.id)
+            }
+        )
+    }
+
+    // Dialog de editar tarea
+    if (uiState.mostrarDialogEditar && uiState.tareaSeleccionada != null) {
+        DialogEditarTarea(
+            tarea = uiState.tareaSeleccionada!!,
+            onDismiss = { viewModel.cerrarDialogEditar() },
+            onSave = { nombre, horas, descripcion ->
+                viewModel.actualizarTarea(nombre, horas, descripcion)
             }
         )
     }
@@ -171,39 +187,69 @@ fun DayChip(
 @Composable
 fun TarjetaTarea(
     tarea: Tarea,
-    onClick: () -> Unit
+    onClick: () -> Unit,
+    onEditClick: () -> Unit
 ) {
     Card(
         modifier = Modifier
             .fillMaxWidth()
             .clickable(onClick = onClick),
         colors = CardDefaults.cardColors(
-            containerColor = Color.White
+            containerColor = if (tarea.completada) VerdeClaro else Color.White
         ),
         elevation = CardDefaults.cardElevation(defaultElevation = 2.dp),
         shape = RoundedCornerShape(12.dp)
     ) {
-        Column(
-            modifier = Modifier.padding(16.dp)
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(16.dp),
+            verticalAlignment = Alignment.CenterVertically
         ) {
-            Text(
-                text = tarea.cursoNombre,
-                color = VerdePrincipal,
-                fontWeight = FontWeight.Bold,
-                fontSize = 18.sp
-            )
-            Spacer(modifier = Modifier.height(4.dp))
-            Text(
-                text = tarea.nombre,
-                color = TextoGris,
-                fontSize = 16.sp
-            )
-            Spacer(modifier = Modifier.height(8.dp))
-            Text(
-                text = "${tarea.horasNecesarias} ${if (tarea.horasNecesarias == 1) "hora" else "horas"}",
-                color = TextoGrisClaro,
-                fontSize = 14.sp
-            )
+            Column(modifier = Modifier.weight(1f)) {
+                Row(verticalAlignment = Alignment.CenterVertically) {
+                    Text(
+                        text = tarea.cursoNombre,
+                        color = VerdePrincipal,
+                        fontWeight = FontWeight.Bold,
+                        fontSize = 18.sp,
+                        textDecoration = if (tarea.completada) TextDecoration.LineThrough else null
+                    )
+                    if (tarea.completada) {
+                        Spacer(modifier = Modifier.width(8.dp))
+                        Icon(
+                            imageVector = Icons.Default.CheckCircle,
+                            contentDescription = "Completada",
+                            tint = VerdePrincipal,
+                            modifier = Modifier.size(20.dp)
+                        )
+                    }
+                }
+                Spacer(modifier = Modifier.height(4.dp))
+                Text(
+                    text = tarea.nombre,
+                    color = TextoGris,
+                    fontSize = 16.sp,
+                    textDecoration = if (tarea.completada) TextDecoration.LineThrough else null
+                )
+                Spacer(modifier = Modifier.height(8.dp))
+                Text(
+                    text = "${tarea.horasNecesarias} ${if (tarea.horasNecesarias == 1) "hora" else "horas"}",
+                    color = TextoGrisClaro,
+                    fontSize = 14.sp
+                )
+            }
+
+            // Botón editar (solo si no está completada)
+            if (!tarea.completada) {
+                IconButton(onClick = onEditClick) {
+                    Icon(
+                        imageVector = Icons.Default.Edit,
+                        contentDescription = "Editar",
+                        tint = VerdePrincipal
+                    )
+                }
+            }
         }
     }
 }
@@ -283,6 +329,32 @@ fun DialogDetalleTarea(
                     )
                 }
 
+                // Mostrar si ya está completada
+                if (tarea.completada) {
+                    Spacer(modifier = Modifier.height(16.dp))
+                    Row(
+                        verticalAlignment = Alignment.CenterVertically,
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .background(VerdeClaro, RoundedCornerShape(8.dp))
+                            .padding(12.dp)
+                    ) {
+                        Icon(
+                            imageVector = Icons.Default.CheckCircle,
+                            contentDescription = "Completada",
+                            tint = VerdePrincipal,
+                            modifier = Modifier.size(24.dp)
+                        )
+                        Spacer(modifier = Modifier.width(8.dp))
+                        Text(
+                            text = "Tarea completada",
+                            fontSize = 14.sp,
+                            fontWeight = FontWeight.Medium,
+                            color = VerdePrincipal
+                        )
+                    }
+                }
+
                 Spacer(modifier = Modifier.height(24.dp))
 
                 // Botones
@@ -302,16 +374,120 @@ fun DialogDetalleTarea(
                         Text("Cancelar")
                     }
 
-                    // Botón iniciar tarea
-                    Button(
-                        onClick = onIniciarTarea,
-                        modifier = Modifier.weight(1f),
-                        colors = ButtonDefaults.buttonColors(
-                            containerColor = VerdePrincipal
-                        ),
-                        shape = RoundedCornerShape(8.dp)
+                    // Botón iniciar tarea (solo si no está completada)
+                    if (!tarea.completada) {
+                        Button(
+                            onClick = onIniciarTarea,
+                            modifier = Modifier.weight(1f),
+                            colors = ButtonDefaults.buttonColors(
+                                containerColor = VerdePrincipal
+                            ),
+                            shape = RoundedCornerShape(8.dp)
+                        ) {
+                            Text("Iniciar tarea")
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
+
+@Composable
+fun DialogEditarTarea(
+    tarea: Tarea,
+    onDismiss: () -> Unit,
+    onSave: (String, Int, String) -> Unit
+) {
+    var nombre by remember { mutableStateOf(tarea.nombre) }
+    var horas by remember { mutableStateOf(tarea.horasNecesarias.toString()) }
+    var descripcion by remember { mutableStateOf(tarea.descripcion) }
+
+    Dialog(onDismissRequest = onDismiss) {
+        Card(
+            modifier = Modifier
+                .fillMaxWidth()
+                .wrapContentHeight(),
+            shape = RoundedCornerShape(16.dp),
+            colors = CardDefaults.cardColors(containerColor = Color.White),
+            elevation = CardDefaults.cardElevation(defaultElevation = 8.dp)
+        ) {
+            Column(modifier = Modifier.padding(24.dp)) {
+                Text(
+                    text = "Editar Tarea",
+                    fontSize = 20.sp,
+                    fontWeight = FontWeight.Bold,
+                    color = VerdePrincipal
+                )
+
+                Spacer(modifier = Modifier.height(16.dp))
+
+                // Campo nombre
+                OutlinedTextField(
+                    value = nombre,
+                    onValueChange = { nombre = it },
+                    label = { Text("Nombre de la tarea") },
+                    modifier = Modifier.fillMaxWidth(),
+                    colors = OutlinedTextFieldDefaults.colors(
+                        focusedBorderColor = VerdePrincipal,
+                        focusedLabelColor = VerdePrincipal
+                    )
+                )
+
+                Spacer(modifier = Modifier.height(12.dp))
+
+                // Campo horas
+                OutlinedTextField(
+                    value = horas,
+                    onValueChange = { if (it.all { char -> char.isDigit() }) horas = it },
+                    label = { Text("Horas necesarias") },
+                    modifier = Modifier.fillMaxWidth(),
+                    colors = OutlinedTextFieldDefaults.colors(
+                        focusedBorderColor = VerdePrincipal,
+                        focusedLabelColor = VerdePrincipal
+                    )
+                )
+
+                Spacer(modifier = Modifier.height(12.dp))
+
+                // Campo descripción
+                OutlinedTextField(
+                    value = descripcion,
+                    onValueChange = { descripcion = it },
+                    label = { Text("Descripción") },
+                    modifier = Modifier.fillMaxWidth().height(120.dp),
+                    maxLines = 4,
+                    colors = OutlinedTextFieldDefaults.colors(
+                        focusedBorderColor = VerdePrincipal,
+                        focusedLabelColor = VerdePrincipal
+                    )
+                )
+
+                Spacer(modifier = Modifier.height(24.dp))
+
+                // Botones
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.spacedBy(12.dp)
+                ) {
+                    OutlinedButton(
+                        onClick = onDismiss,
+                        modifier = Modifier.weight(1f)
                     ) {
-                        Text("Iniciar tarea")
+                        Text("Cancelar")
+                    }
+
+                    Button(
+                        onClick = {
+                            val horasInt = horas.toIntOrNull() ?: 1
+                            onSave(nombre, horasInt, descripcion)
+                            onDismiss()
+                        },
+                        modifier = Modifier.weight(1f),
+                        colors = ButtonDefaults.buttonColors(containerColor = VerdePrincipal),
+                        enabled = nombre.isNotBlank() && horas.isNotBlank()
+                    ) {
+                        Text("Guardar")
                     }
                 }
             }
