@@ -1,30 +1,65 @@
+<?xml version="1.0" encoding="utf-8"?>
 <vector xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:aapt="http://schemas.android.com/aapt"
     android:width="108dp"
     android:height="108dp"
     android:viewportWidth="108"
     android:viewportHeight="108">
-    <path android:pathData="M31,63.928c0,0 6.4,-11 12.1,-13.1c7.2,-2.6 26,-1.4 26,-1.4l38.1,38.1L107,108.928l-32,-1L31,63.928z">
-        <aapt:attr name="android:fillColor">
-            <gradient
-                android:endX="85.84757"
-                android:endY="92.4963"
-                android:startX="42.9492"
-                android:startY="49.59793"
-                android:type="linear">
-                <item
-                    android:color="#44000000"
-                    android:offset="0.0" />
-                <item
-                    android:color="#00000000"
-                    android:offset="1.0" />
-            </gradient>
-        </aapt:attr>
-    </path>
-    <path
-        android:fillColor="#FFFFFF"
-        android:fillType="nonZero"
-        android:pathData="M65.3,45.828l3.8,-6.6c0.2,-0.4 0.1,-0.9 -0.3,-1.1c-0.4,-0.2 -0.9,-0.1 -1.1,0.3l-3.9,6.7c-6.3,-2.8 -13.4,-2.8 -19.7,0l-3.9,-6.7c-0.2,-0.4 -0.7,-0.5 -1.1,-0.3C38.8,38.328 38.7,38.828 38.9,39.228l3.8,6.6C36.2,49.428 31.7,56.028 31,63.928h46C76.3,56.028 71.8,49.428 65.3,45.828zM43.4,57.328c-0.8,0 -1.5,-0.5 -1.8,-1.2c-0.3,-0.7 -0.1,-1.5 0.4,-2.1c0.5,-0.5 1.4,-0.7 2.1,-0.4c0.7,0.3 1.2,1 1.2,1.8C45.3,56.528 44.5,57.328 43.4,57.328L43.4,57.328zM64.6,57.328c-0.8,0 -1.5,-0.5 -1.8,-1.2s-0.1,-1.5 0.4,-2.1c0.5,-0.5 1.4,-0.7 2.1,-0.4c0.7,0.3 1.2,1 1.2,1.8C66.5,56.528 65.6,57.328 64.6,57.328L64.6,57.328z"
-        android:strokeWidth="1"
-        android:strokeColor="#00000000" />
+
+    <group
+        android:scaleX="0.7"
+        android:scaleY="0.7"
+        android:translateX="16.2"
+        android:translateY="16.2">
+
+        <!-- Tomate (círculo rojo) -->
+        <path
+            android:fillColor="#E74C3C"
+            android:pathData="M54,20
+                C71.6,20 86,34.4 86,52
+                C86,69.6 71.6,84 54,84
+                C36.4,84 22,69.6 22,52
+                C22,34.4 36.4,20 54,20 Z" />
+
+        <!-- Hojas verdes superiores -->
+        <!-- Hoja izquierda -->
+        <path
+            android:fillColor="#4CAF50"
+            android:pathData="M44,18
+                C44,18 38,12 32,14
+                C26,16 28,22 32,24
+                C36,26 44,22 44,18 Z" />
+
+        <!-- Hoja centro -->
+        <path
+            android:fillColor="#5FA777"
+            android:pathData="M54,14
+                C54,14 52,6 54,4
+                C56,2 60,4 60,8
+                C60,12 56,16 54,14 Z" />
+
+        <!-- Hoja derecha -->
+        <path
+            android:fillColor="#4CAF50"
+            android:pathData="M64,18
+                C64,18 70,12 76,14
+                C82,16 80,22 76,24
+                C72,26 64,22 64,18 Z" />
+
+        <!-- Brillo del tomate (círculo blanco translúcido) -->
+        <path
+            android:fillColor="#FFFFFF"
+            android:fillAlpha="0.3"
+            android:pathData="M42,34
+                C42,34 38,30 38,26
+                C38,22 42,20 46,22
+                C50,24 48,32 42,34 Z" />
+
+        <!-- Reloj/Check mark minimalista -->
+        <path
+            android:fillColor="#FFFFFF"
+            android:fillAlpha="0.8"
+            android:strokeWidth="3"
+            android:strokeColor="#FFFFFF"
+            android:pathData="M54,45 L54,55 L60,60" />
+    </group>
 </vector>
