@@ -4,11 +4,14 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.tomatetutiempo.data.model.Curso
 import com.example.tomatetutiempo.data.model.Tarea
+import com.example.tomatetutiempo.data.repository.CourseRepository
 import com.example.tomatetutiempo.data.repository.TaskRepository
+import com.google.firebase.Timestamp
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
+import java.util.Date
 import java.util.UUID
 
 data class CreateTaskUiState(
@@ -24,7 +27,11 @@ data class CreateTaskUiState(
     val error: String? = null
 )
 
-class CreateTaskViewModel : ViewModel() {
+class CreateTaskViewModel(
+    private val courseRepository: CourseRepository = CourseRepository(),
+    private val taskRepository: TaskRepository = TaskRepository()
+
+) : ViewModel() {
 
     private val _uiState = MutableStateFlow(CreateTaskUiState())
     val uiState: StateFlow<CreateTaskUiState> = _uiState.asStateFlow()
@@ -35,15 +42,9 @@ class CreateTaskViewModel : ViewModel() {
 
     private fun cargarCursos() {
         viewModelScope.launch {
-            // Por ahora, cursos de ejemplo
-            // Más adelante esto se conectará con Firebase/Repository
-            val cursosEjemplo = listOf(
-                Curso(id = "1", nombre = "Cálculo 1", color = "#4CAF50"),
-                Curso(id = "2", nombre = "Física 1", color = "#2196F3"),
-                Curso(id = "3", nombre = "POO", color = "#FF9800"),
-                Curso(id = "4", nombre = "Estadística", color = "#9C27B0")
-            )
-            _uiState.value = _uiState.value.copy(cursos = cursosEjemplo)
+            _uiState.value = _uiState.value.copy(isLoading = true)
+            val cursosDesdeFirebase = courseRepository.obtenerCursos()
+            _uiState.value = _uiState.value.copy(cursos = cursosDesdeFirebase, isLoading = false)
         }
     }
 
@@ -90,10 +91,13 @@ class CreateTaskViewModel : ViewModel() {
             val nombreCurso = _uiState.value.nombreNuevoCurso.trim()
             if (nombreCurso.isNotEmpty()) {
                 val nuevoCurso = Curso(
-                    id = UUID.randomUUID().toString(),
                     nombre = nombreCurso,
                     color = generarColorAleatorio()
                 )
+
+                courseRepository.agregarCurso(nuevoCurso)
+                cargarCursos()
+
                 val cursosActualizados = _uiState.value.cursos + nuevoCurso
                 _uiState.value = _uiState.value.copy(
                     cursos = cursosActualizados,
@@ -107,6 +111,15 @@ class CreateTaskViewModel : ViewModel() {
 
     fun guardarTarea(): Boolean {
         val state = _uiState.value
+
+        val curso = state.cursoSeleccionado
+        val fecha = state.fechaSeleccionada
+        val horas = state.horasNecesarias.toIntOrNull()
+
+        if (curso == null || state.nombreTarea.isBlank() || fecha == null || horas == null) {
+            _uiState.value = _uiState.value.copy(error = "Completa todos los campos")
+            return false
+        }
 
         // Validaciones
         if (state.cursoSeleccionado == null) {
@@ -126,20 +139,22 @@ class CreateTaskViewModel : ViewModel() {
             return false
         }
 
+
         // Crear tarea
         val nuevaTarea = Tarea(
-            id = UUID.randomUUID().toString(),
             nombre = state.nombreTarea,
-            cursoId = state.cursoSeleccionado.id,
-            cursoNombre = state.cursoSeleccionado.nombre,
-            fecha = state.fechaSeleccionada,
-            horasNecesarias = state.horasNecesarias.toInt(),
-            descripcion = state.descripcion
+            cursoId = curso.id,
+            cursoNombre = curso.nombre,
+            fecha = Timestamp(Date(fecha)),
+            horasNecesarias = horas,
+            descripcion = state.descripcion,
+            completada = false
         )
 
         // Guardar en el repositorio
-        TaskRepository.agregarTarea(nuevaTarea)
-        println("Tarea guardada: $nuevaTarea")
+        viewModelScope.launch {
+            taskRepository.agregarTarea(nuevaTarea)
+        }
 
         limpiarFormulario()
         return true

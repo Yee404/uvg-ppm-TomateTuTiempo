@@ -2,13 +2,15 @@ package com.example.tomatetutiempo.ui.presentation.profile
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.tomatetutiempo.data.repository.UserStatsRepository
+import com.example.tomatetutiempo.data.repository.UserRepository
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 
-class ProfileViewModel : ViewModel() {
+class ProfileViewModel(
+    private val userRepository: UserRepository = UserRepository()
+) : ViewModel() {
 
     private val _state = MutableStateFlow(ProfileState())
     val state: StateFlow<ProfileState> = _state.asStateFlow()
@@ -19,16 +21,20 @@ class ProfileViewModel : ViewModel() {
 
     private fun loadUserProfile() {
         viewModelScope.launch {
-            // Observar los cambios en las estadísticas del usuario
-            UserStatsRepository.userStats.collect { stats ->
+            _state.value = ProfileState(isLoading = true)
+            val user = userRepository.getUserProfile()
+
+            if (user != null) {
                 _state.value = ProfileState(
                     isLoading = false,
-                    name = stats.name,
-                    email = stats.email,
-                    gems = stats.gems,
-                    completedTasks = stats.completedTasks,
-                    streak = stats.streak
-                )
+                    name = user.name,
+                    email = user.email,
+                    gems = user.gems,
+                    completedTasks = user.completedTasks,
+                    streak = user.streak
+                    )
+            } else {
+                _state.value = ProfileState(isLoading = false, name = "Error", email = "No se pudo cargar el perfil")
             }
         }
     }

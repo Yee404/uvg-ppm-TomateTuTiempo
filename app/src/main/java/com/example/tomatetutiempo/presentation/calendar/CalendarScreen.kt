@@ -9,6 +9,7 @@ import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.CheckCircle
 import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material3.*
@@ -55,9 +56,23 @@ fun CalendarScreen(
                         fontWeight = FontWeight.SemiBold,
                         fontSize = 20.sp
                     )
-                }
+                },
+
+                navigationIcon = {
+                    IconButton(onClick = onNavigateBack) {
+                        Icon(
+                            imageVector = Icons.Default.ArrowBack,
+                            contentDescription = "Volver",
+                            tint = VerdePrincipal
+                        )
+                    }
+                },
+
             )
         },
+
+
+
         modifier = modifier.fillMaxSize()
     ) { padding ->
         Column(

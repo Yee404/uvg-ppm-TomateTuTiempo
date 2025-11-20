@@ -18,7 +18,6 @@ import com.example.tomatetutiempo.presentation.creartarea.PantallaCrearTarea
 import com.example.tomatetutiempo.presentation.creartarea.PantallaDetalleTarea
 import com.example.tomatetutiempo.presentation.creartarea.CreateTaskViewModel
 import com.example.tomatetutiempo.presentation.calendar.CalendarScreen
-import com.example.tomatetutiempo.presentation.calendar.CalendarViewModel
 import com.example.tomatetutiempo.presentation.timer.TimerScreen
 import com.example.tomatetutiempo.presentation.store.StoreScreen
 import com.example.tomatetutiempo.ui.presentation.profile.PerfilScreen
@@ -39,8 +38,6 @@ class MainActivity : ComponentActivity() {
 @Composable
 fun NavigationApp() {
     val navController = rememberNavController()
-
-    // ViewModel compartido para las pantallas de crear tarea
     val createTaskViewModel: CreateTaskViewModel = viewModel()
 
     NavHost(
@@ -49,7 +46,11 @@ fun NavigationApp() {
     ) {
         composable("login") {
             Login(
-                onLoginSuccess = { navController.navigate("welcome") },
+                onLoginSuccess = {
+                    navController.navigate("welcome") {
+                        popUpTo("login") { inclusive = true }
+                    }
+                },
                 onRegisterClick = { navController.navigate("register") }
             )
         }
@@ -57,7 +58,6 @@ fun NavigationApp() {
         composable("register") {
             RegisterScreen(
                 onRegisterSuccess = {
-                    // Después del registro exitoso, ir a welcome
                     navController.navigate("welcome") {
                         popUpTo("login") { inclusive = true }
                     }
@@ -81,24 +81,18 @@ fun NavigationApp() {
         composable("crearTarea") {
             PantallaCrearTarea(
                 viewModel = createTaskViewModel,
-                onNavigateBack = {
-                    navController.popBackStack()
-                },
-                onCursoSeleccionado = {
-                    navController.navigate("detalleTarea")
-                }
+                onNavigateBack = { navController.popBackStack() },
+                onCursoSeleccionado = { navController.navigate("detalleTarea") }
             )
         }
 
         composable("detalleTarea") {
             PantallaDetalleTarea(
                 viewModel = createTaskViewModel,
-                onNavigateBack = {
-                    navController.popBackStack()
-                },
+                onNavigateBack = { navController.popBackStack() },
                 onTareaGuardada = {
-                    navController.navigate("welcome") {
-                        popUpTo("crearTarea") { inclusive = true }
+                    navController.navigate("calendar") {
+                        popUpTo("welcome")
                     }
                 }
             )
@@ -106,20 +100,20 @@ fun NavigationApp() {
 
         composable("calendar") {
             CalendarScreen(
-                onTaskSelected = { taskName ->
-                    navController.navigate("timer/$taskName")
+                onTaskSelected = { taskId ->
+                    navController.navigate("timer/$taskId")
                 },
                 onNavigateBack = { navController.popBackStack() }
             )
         }
 
         composable(
-            route = "timer/{taskName}",
-            arguments = listOf(navArgument("taskName") { type = NavType.StringType })
+            route = "timer/{taskId}",
+            arguments = listOf(navArgument("taskId") { type = NavType.StringType })
         ) { backStackEntry ->
-            val taskName = backStackEntry.arguments?.getString("taskName") ?: ""
+            val taskId = backStackEntry.arguments?.getString("taskId") ?: ""
             TimerScreen(
-                taskName = taskName,
+                taskId = taskId,
                 onNavigateBack = { navController.popBackStack() }
             )
         }
@@ -130,12 +124,8 @@ fun NavigationApp() {
 
         composable("profile") {
             PerfilScreen(
-                onEditProfileClick = {
-                    // TODO: Navegar a editar perfil cuando esté listo
-                },
-                onSettingsClick = {
-                    // TODO: Navegar a ajustes cuando esté listo
-                },
+                onEditProfileClick = { /* TODO */ },
+                onSettingsClick = { /* TODO */ },
                 onLogoutClick = {
                     navController.navigate("login") {
                         popUpTo("welcome") { inclusive = true }
