@@ -1,14 +1,15 @@
 package com.example.tomatetutiempo.presentation.store
 
-data class Producto(
-    val id: Int,
+data class StoreItem(
+    val id: String,
     val nombre: String,
     val descripcion: String,
-    val precio: String
+    val costoGemas: Int,
+    val comprado: Boolean = false
 )
 
 data class StoreState(
-    val productos: List<Producto> = emptyList(),
-    val cargando: Boolean = false
-
+    val gemasUsuario: Int = 0,
+    val items: List<StoreItem> = emptyList(),
+    val mensaje: String? = null
 )

@@ -1,53 +1,82 @@
 package com.example.tomatetutiempo.presentation.store
 
 import androidx.lifecycle.ViewModel
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.State
-import androidx.lifecycle.viewModelScope
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.launch
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.update
 
 class StoreViewModel : ViewModel() {
 
-    // estado interno que se puede cambiar
-    private val _state = mutableStateOf(
-        StoreState(
-            productos = emptyList(),
-            cargando = true
-        )
-    )
-
-    // estado público solo lectura
-    val state: State<StoreState> = _state
+    private val _state = MutableStateFlow(StoreState())
+    val state: StateFlow<StoreState> = _state.asStateFlow()
 
     init {
-        cargarProductosFalsos()
+        cargarTienda()
     }
 
-    private fun cargarProductosFalsos() {
-        viewModelScope.launch {
-            // Simular “cargando…”
-            delay(1000)
+    private fun cargarTienda() {
+        val gemasIniciales = 80
 
-            val listaFalsa = listOf(
-                Producto(
-                    id = 1,
-                    nombre = "Pomodoro Pro",
-                    descripcion = "Temporizador premium para estudio.",
-                    precio = "Q29.99"
-                ),
-                Producto(
-                    id = 2,
-                    nombre = "Paquete de stickers",
-                    descripcion = "Stickers motivacionales digitales.",
-                    precio = "Q9.99"
-                )
+        val listaItems = listOf(
+            StoreItem(
+                id = "tema_pastel",
+                nombre = "Tema pastel",
+                descripcion = "Colores suaves para estudiar más relajado.",
+                costoGemas = 30
+            ),
+            StoreItem(
+                id = "tema_oscuro",
+                nombre = "Tema oscuro",
+                descripcion = "Ideal para estudiar de noche.",
+                costoGemas = 40
+            ),
+            StoreItem(
+                id = "sonidos",
+                nombre = "Paquete de sonidos",
+                descripcion = "Sonidos de lluvia y bosque para concentrarte.",
+                costoGemas = 25
+            ),
+            StoreItem(
+                id = "stickers",
+                nombre = "Stickers motivacionales",
+                descripcion = "Frases lindas cuando completas tareas.",
+                costoGemas = 20
             )
+        )
 
-            _state.value = StoreState(
-                productos = listaFalsa,
-                cargando = false
+        _state.value = StoreState(
+            gemasUsuario = gemasIniciales,
+            items = listaItems
+        )
+    }
+
+    fun comprar(itemId: String) {
+        val estadoActual = _state.value
+        val item = estadoActual.items.find { it.id == itemId } ?: return
+
+        if (item.comprado) {
+            _state.update { it.copy(mensaje = "Ya compraste este artículo.") }
+            return
+        }
+
+        if (estadoActual.gemasUsuario < item.costoGemas) {
+            _state.update { it.copy(mensaje = "No tienes suficientes gemas.") }
+            return
+        }
+
+        _state.update {
+            it.copy(
+                gemasUsuario = it.gemasUsuario - item.costoGemas,
+                items = it.items.map { articulo ->
+                    if (articulo.id == itemId) articulo.copy(comprado = true) else articulo
+                },
+                mensaje = "Compra realizada con éxito."
             )
         }
+    }
+
+    fun limpiarMensaje() {
+        _state.update { it.copy(mensaje = null) }
     }
 }
