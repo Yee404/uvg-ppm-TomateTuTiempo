@@ -14,17 +14,20 @@ import androidx.compose.ui.unit.dp
 import com.example.tomatetutiempo.presentation.theme.WelcomeColors
 import com.example.tomatetutiempo.R
 import com.example.tomatetutiempo.ui.theme.TomateTuTiempoTheme
+import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.collectAsState
 
 @Composable
 fun WelcomeScreen(
-    userName: String = stringResource(R.string.preview_user_name),
-    profileImageRes: Int = android.R.drawable.ic_menu_camera,
+    viewModel: WelcomeViewModel = viewModel(),
     onAddTaskClick: () -> Unit = {},
     onCalendarClick: () -> Unit = {},
     onStoreClick: () -> Unit = {},
     onProfileClick: () -> Unit = {},
     modifier: Modifier = Modifier
 ) {
+    val uiState by viewModel.uiState.collectAsState()
     Scaffold(
         modifier = modifier
     ) { paddingValues ->
@@ -43,11 +46,13 @@ fun WelcomeScreen(
             ) {
                 Spacer(modifier = Modifier.height(40.dp))
 
-                // Header con foto de perfil y saludo
-                ProfileHeader(
-                    userName = userName,
-                    profileImageRes = profileImageRes
-                )
+                if (uiState.isLoading) {
+                } else {
+                    ProfileHeader(
+                        userName = uiState.user?.name ?: "Usuario",
+                        profileImageRes = android.R.drawable.ic_menu_camera
+                    )
+                }
 
                 Spacer(modifier = Modifier.height(48.dp))
 
@@ -62,17 +67,5 @@ fun WelcomeScreen(
                 Spacer(modifier = Modifier.height(24.dp))
             }
         }
-    }
-}
-
-
-@Preview(showBackground = true, showSystemUi = true)
-@Composable
-fun WelcomeScreenFullPreview() {
-    TomateTuTiempoTheme {
-        WelcomeScreen(
-            userName = stringResource(R.string.preview_user_name),
-            profileImageRes = android.R.drawable.ic_menu_camera
-        )
     }
 }

@@ -89,7 +89,9 @@ class CreateTaskViewModel(
     fun crearNuevoCurso() {
         viewModelScope.launch {
             val nombreCurso = _uiState.value.nombreNuevoCurso.trim()
-            if (nombreCurso.isNotEmpty()) {
+            val cursoYaExiste = _uiState.value.cursos.any { it.nombre.equals(nombreCurso, ignoreCase = true) }
+
+            if (nombreCurso.isNotEmpty() && !cursoYaExiste) {
                 val nuevoCurso = Curso(
                     nombre = nombreCurso,
                     color = generarColorAleatorio()
@@ -98,13 +100,12 @@ class CreateTaskViewModel(
                 courseRepository.agregarCurso(nuevoCurso)
                 cargarCursos()
 
-                val cursosActualizados = _uiState.value.cursos + nuevoCurso
                 _uiState.value = _uiState.value.copy(
-                    cursos = cursosActualizados,
-                    cursoSeleccionado = nuevoCurso,
                     mostrarDialogNuevoCurso = false,
                     nombreNuevoCurso = ""
                 )
+            } else if (cursoYaExiste) {
+                _uiState.value = _uiState.value.copy(error = "Ese curso ya existe")
             }
         }
     }

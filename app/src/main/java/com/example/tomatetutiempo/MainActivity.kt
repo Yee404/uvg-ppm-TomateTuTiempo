@@ -124,6 +124,7 @@ fun NavigationApp() {
 
         composable("profile") {
             PerfilScreen(
+                onNavigateBack = { navController.popBackStack() },
                 onEditProfileClick = { /* TODO */ },
                 onSettingsClick = { /* TODO */ },
                 onLogoutClick = {
