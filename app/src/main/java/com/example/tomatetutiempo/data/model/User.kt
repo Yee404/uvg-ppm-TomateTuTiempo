@@ -9,5 +9,6 @@ data class User(
     val gems: Int = 0,
     val completedTasks: Int = 0,
     val streak: Int = 0,
-    val lastCompletionDate: Timestamp? = null
+    val lastCompletionDate: Timestamp? = null,
+    val purchasedItems: List<String> = emptyList()
 )

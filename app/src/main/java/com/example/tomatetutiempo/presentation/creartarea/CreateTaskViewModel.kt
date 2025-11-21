@@ -1,5 +1,6 @@
 package com.example.tomatetutiempo.presentation.creartarea
 
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.tomatetutiempo.data.model.Curso
@@ -7,6 +8,7 @@ import com.example.tomatetutiempo.data.model.Tarea
 import com.example.tomatetutiempo.data.repository.CourseRepository
 import com.example.tomatetutiempo.data.repository.TaskRepository
 import com.google.firebase.Timestamp
+import com.google.firebase.auth.FirebaseAuth
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -35,16 +37,61 @@ class CreateTaskViewModel(
 
     private val _uiState = MutableStateFlow(CreateTaskUiState())
     val uiState: StateFlow<CreateTaskUiState> = _uiState.asStateFlow()
+    private val auth = FirebaseAuth.getInstance()
 
-    init {
-        cargarCursos()
+    private val authStateListener = FirebaseAuth.AuthStateListener { firebaseAuth ->
+        val user = firebaseAuth.currentUser
+        if (user != null) {
+            Log.d("ViewModel", "Usuario detectado/cambiado: ${user.uid}")
+            courseRepository.activarListener(user.uid)
+        } else {
+            Log.d("ViewModel", "No hay usuario logueado, limpiando datos.")
+            courseRepository.detenerListener()
+            _uiState.value = _uiState.value.copy(cursos = emptyList())
+        }
     }
 
-    private fun cargarCursos() {
+    init {
+        auth.addAuthStateListener(authStateListener)
+
         viewModelScope.launch {
             _uiState.value = _uiState.value.copy(isLoading = true)
-            val cursosDesdeFirebase = courseRepository.obtenerCursos()
-            _uiState.value = _uiState.value.copy(cursos = cursosDesdeFirebase, isLoading = false)
+
+            courseRepository.cursos.collect { listaCursos ->
+                Log.d("ViewModel", "Actualizando UI con ${listaCursos.size} cursos")
+                _uiState.value = _uiState.value.copy(
+                    cursos = listaCursos,
+                    isLoading = false
+                )
+            }
+        }
+    }
+
+    override fun onCleared() {
+        super.onCleared()
+        auth.removeAuthStateListener(authStateListener)
+        courseRepository.detenerListener()
+        Log.d("ViewModel", "ViewModel destruido y recursos limpiados")
+    }
+    private fun inicializarDatos() {
+        val userId = auth.currentUser?.uid
+        if (userId != null) {
+            courseRepository.activarListener(userId)
+
+            viewModelScope.launch {
+                _uiState.value = _uiState.value.copy(isLoading = true)
+
+                courseRepository.cursos.collect { listaCursos ->
+                    Log.d("ViewModel", "Recibida lista de cursos: ${listaCursos.size}")
+                    _uiState.value = _uiState.value.copy(
+                        cursos = listaCursos,
+                        isLoading = false
+                    )
+                }
+            }
+        } else {
+            Log.e("ViewModel", "Usuario no logueado al iniciar ViewModel")
+            _uiState.value = _uiState.value.copy(error = "Error de sesión")
         }
     }
 
@@ -98,7 +145,6 @@ class CreateTaskViewModel(
                 )
 
                 courseRepository.agregarCurso(nuevoCurso)
-                cargarCursos()
 
                 _uiState.value = _uiState.value.copy(
                     mostrarDialogNuevoCurso = false,
@@ -112,7 +158,6 @@ class CreateTaskViewModel(
 
     fun guardarTarea(): Boolean {
         val state = _uiState.value
-
         val curso = state.cursoSeleccionado
         val fecha = state.fechaSeleccionada
         val horas = state.horasNecesarias.toIntOrNull()
@@ -141,7 +186,6 @@ class CreateTaskViewModel(
         }
 
 
-        // Crear tarea
         val nuevaTarea = Tarea(
             nombre = state.nombreTarea,
             cursoId = curso.id,
@@ -152,7 +196,6 @@ class CreateTaskViewModel(
             completada = false
         )
 
-        // Guardar en el repositorio
         viewModelScope.launch {
             taskRepository.agregarTarea(nuevaTarea)
         }
@@ -175,5 +218,11 @@ class CreateTaskViewModel(
             "#E91E63", "#00BCD4", "#FFEB3B", "#795548"
         )
         return colores.random()
+    }
+
+    fun eliminarCurso(cursoId: String) {
+        viewModelScope.launch {
+            courseRepository.eliminarCurso(cursoId)
+        }
     }
 }

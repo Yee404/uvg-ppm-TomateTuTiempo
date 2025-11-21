@@ -9,6 +9,8 @@ import kotlinx.coroutines.suspendCancellableCoroutine
 import java.util.Calendar
 import kotlin.coroutines.resume
 import kotlin.coroutines.resumeWithException
+import com.google.firebase.firestore.FieldValue
+import kotlinx.coroutines.tasks.await
 
 class UserRepository {
 
@@ -103,6 +105,7 @@ class UserRepository {
         }
     }
 
+
     suspend fun onTaskCompleted() {
         val currentUser = auth.currentUser ?: return
         val userProfile = getUserProfile() ?: return
@@ -151,5 +154,25 @@ class UserRepository {
     private fun getDaysDifference(date1: Long, date2: Long): Long {
         val millisecondsPerDay = 24 * 60 * 60 * 1000L
         return (date2 - date1) / millisecondsPerDay
+    }
+
+    suspend fun purchaseItem(itemId: String, cost: Int) {
+        val currentUser = auth.currentUser ?: return
+        val userDocRef = firestore.collection("users").document(currentUser.uid)
+
+        try {
+            firestore.runTransaction { transaction ->
+                val snapshot = transaction.get(userDocRef)
+                val currentGems = snapshot.getLong("gems")?.toInt() ?: 0
+
+                if (currentGems >= cost) {
+                    transaction.update(userDocRef, "gems", currentGems - cost)
+                    transaction.update(userDocRef, "purchasedItems", FieldValue.arrayUnion(itemId))
+                } else {
+                }
+            }.await() // !FUNCIÓN KTX <- revisar de primero si algo aquí no funciona :^
+        } catch (e: Exception) {
+            e.printStackTrace()
+        }
     }
 }

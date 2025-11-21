@@ -23,7 +23,7 @@ fun DarkGreenButton(
         modifier = modifier.height(48.dp),
         shape = RoundedCornerShape(10.dp),
         colors = ButtonDefaults.buttonColors(
-            containerColor = LoginColors.DarkGreen, // ← Usa LoginColors en lugar de Color(0xFF467848)
+            containerColor = LoginColors.DarkGreen,
             contentColor = Color.Companion.White
         )
     ) {

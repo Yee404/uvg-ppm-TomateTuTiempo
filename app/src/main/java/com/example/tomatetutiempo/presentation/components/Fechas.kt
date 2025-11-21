@@ -27,7 +27,6 @@ fun SelectorFecha(
     val mes = calendario.get(Calendar.MONTH)
     val dia = calendario.get(Calendar.DAY_OF_MONTH)
 
-    // Obtener fecha actual en milisegundos (inicio del día)
     val fechaActual = remember {
         Calendar.getInstance().apply {
             set(Calendar.HOUR_OF_DAY, 0)
@@ -42,7 +41,6 @@ fun SelectorFecha(
         { _, year, month, dayOfMonth ->
             fechaSeleccionada = "$dayOfMonth/${month + 1}/$year"
 
-            // Callback con timestamp en milisegundos
             onFechaSeleccionada?.let {
                 val selectedCalendar = Calendar.getInstance().apply {
                     set(year, month, dayOfMonth, 0, 0, 0)
@@ -54,7 +52,6 @@ fun SelectorFecha(
         annio, mes, dia
     )
 
-    // No permitir seleccionar fechas anteriores a hoy
     datePickerDialog.datePicker.minDate = fechaActual
 
     Column(modifier = Modifier.padding(16.dp)) {

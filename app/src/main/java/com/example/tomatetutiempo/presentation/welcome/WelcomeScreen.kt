@@ -56,7 +56,7 @@ fun WelcomeScreen(
 
                 Spacer(modifier = Modifier.height(48.dp))
 
-                // Sección de botones del menú (sin Ajustes)
+                // Sección de botones del menú
                 MenuSection(
                     onAddTaskClick = onAddTaskClick,
                     onCalendarClick = onCalendarClick,

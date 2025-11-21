@@ -118,9 +118,12 @@ class CalendarViewModel(
         }
     }
 
-    fun eliminarTarea(tareaId: String) {
+    fun eliminarTareaSeleccionada() {
         viewModelScope.launch {
-            taskRepository.eliminarTarea(tareaId)
+            _uiState.value.tareaSeleccionada?.let { tarea ->
+                taskRepository.eliminarTarea(tarea.id)
+                cerrarDialogDetalle()
+            }
         }
     }
 

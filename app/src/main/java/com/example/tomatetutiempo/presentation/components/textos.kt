@@ -23,14 +23,14 @@ fun CampoDeTexto(
         modifier = Modifier
             .fillMaxWidth()
             .padding(16.dp),
-        shape = RoundedCornerShape(10.dp), // 🟢 Esquinas suavemente redondeadas
+        shape = RoundedCornerShape(10.dp),
         colors = OutlinedTextFieldDefaults.colors(
-            focusedBorderColor = Color(0xFF2E7D32),    // Verde al enfocar
-            unfocusedBorderColor = Color.Gray,         // Gris sin foco
-            focusedLabelColor = Color(0xFF2E7D32),     // Label verde al enfocar
-            unfocusedLabelColor = Color.DarkGray,      // Label gris sin foco
-            focusedContainerColor = Color.White,       // Fondo blanco al enfocar
-            unfocusedContainerColor = Color.White      // Fondo blanco sin foco
+            focusedBorderColor = Color(0xFF2E7D32),
+            unfocusedBorderColor = Color.Gray,
+            focusedLabelColor = Color(0xFF2E7D32),
+            unfocusedLabelColor = Color.DarkGray,
+            focusedContainerColor = Color.White,
+            unfocusedContainerColor = Color.White
         )
     )
 }

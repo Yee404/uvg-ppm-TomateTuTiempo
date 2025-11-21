@@ -20,7 +20,7 @@
     <string name="login_exitoso">¡Login exitoso! Recuerda: $rememberMe</string>
     <string name="login">Login</string>
     <string name="dont_account">¿No tienes una cuenta? </string>
-    <string name="register">Registrarse</string>
+    <string name="register"> Registrarse</string>
     <string name="navigate_register">Ir a registro</string>
 
     <!-- ==================== Strings Nueva Tarea ==================== -->

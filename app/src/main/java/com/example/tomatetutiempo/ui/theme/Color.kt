@@ -21,3 +21,9 @@ val DarkGreenText = Color(0xFF388E3C)      // Un verde más oscuro para el texto
 val MediumGreenAccent = Color(0xFF68B364)   // Un verde medio para acentos o elementos secundarios
 val ButtonGreen = Color(0xFF4CAF50)        // Verde para el botón si es necesario (aunque en la imagen parece más gris)
 val IconColor = Color(0xFF505050) // Un gris oscuro para los iconos de +/-
+
+//StoreScreen
+ val VerdePrincipal = Color(0xFF5FA777)
+ val VerdeFondo = Color(0xFFF1F8F4)
+ val TextoOscuro = Color(0xFF1B1B1B)
+ val TextoClaro = Color(0xFF4A4A4A)

@@ -119,7 +119,7 @@ fun NavigationApp() {
         }
 
         composable("store") {
-            StoreScreen()
+            StoreScreen(onNavigateBack = { navController.popBackStack() })
         }
 
         composable("profile") {

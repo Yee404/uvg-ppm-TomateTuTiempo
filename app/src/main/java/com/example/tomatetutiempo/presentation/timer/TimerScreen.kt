@@ -19,6 +19,9 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
+import com.example.tomatetutiempo.ui.theme.DarkGreenText
+import com.example.tomatetutiempo.ui.theme.IconColor
+import com.example.tomatetutiempo.ui.theme.LightGreenBackground
 import java.util.Locale
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -43,7 +46,7 @@ fun TimerScreen(
                         Icon(
                             imageVector = Icons.AutoMirrored.Filled.ArrowBack,
                             contentDescription = "Volver",
-                            tint = MaterialTheme.colorScheme.primary
+                            tint = DarkGreenText
                         )
                     }
                 },
@@ -52,11 +55,11 @@ fun TimerScreen(
                 )
             )
         },
-        containerColor = MaterialTheme.colorScheme.background
+        containerColor = LightGreenBackground
     ) { innerPadding ->
         if (uiState.isLoading) {
             Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-                CircularProgressIndicator()
+                CircularProgressIndicator(color = DarkGreenText)
             }
         } else if (uiState.tarea == null) {
             Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
@@ -77,9 +80,11 @@ fun TimerScreen(
                 ) {
                     Spacer(modifier = Modifier.height(16.dp))
 
-                    Text(uiState.tarea!!.cursoNombre, fontSize = 36.sp, fontWeight = FontWeight.Bold, color = MaterialTheme.colorScheme.primary)
-                    Text(uiState.tarea!!.nombre, fontSize = 20.sp, color = MaterialTheme.colorScheme.onBackground)
-                    Text(uiState.tarea!!.descripcion, fontSize = 16.sp, color = MaterialTheme.colorScheme.onBackground.copy(alpha = 0.7f), modifier = Modifier.padding(bottom = 70.dp))
+                    Text(uiState.tarea!!.cursoNombre, fontSize = 36.sp, fontWeight = FontWeight.Bold, color = DarkGreenText)
+                    Text(uiState.tarea!!.nombre, fontSize = 20.sp, color = DarkGreenText)
+                    if (uiState.tarea!!.descripcion.isNotBlank()) {
+                        Text(uiState.tarea!!.descripcion, fontSize = 16.sp, color = DarkGreenText.copy(alpha = 0.7f), modifier = Modifier.padding(bottom = 70.dp))
+                    }
 
                     TimerDisplay(timeInSeconds = uiState.tiempoRestanteSegundos)
 
@@ -88,8 +93,8 @@ fun TimerScreen(
                     TimerControls(
                         isTimerRunning = uiState.isTimerRunning,
                         onPlayPause = { viewModel.onPlayPause() },
-                        onDecrease = {},
-                        onIncrease = {}
+                        onDecrease = { viewModel.onDecreaseTime() },
+                        onIncrease = { viewModel.onIncreaseTime() }
                     )
                 }
 
@@ -99,15 +104,39 @@ fun TimerScreen(
                         onNavigateBack()
                     },
                     shape = RoundedCornerShape(8.dp),
-                    border = BorderStroke(1.dp, MaterialTheme.colorScheme.primary),
+                    colors = ButtonDefaults.outlinedButtonColors(contentColor = DarkGreenText),
+                    border = BorderStroke(1.dp, DarkGreenText),
                     modifier = Modifier
                         .fillMaxWidth()
                         .padding(vertical = 16.dp)
                         .height(44.dp)
                 ) {
-                    Text("FINALIZADO", fontSize = 16.sp, fontWeight = FontWeight.SemiBold, color = MaterialTheme.colorScheme.primary)
+                    Text("FINALIZADO", fontSize = 16.sp, fontWeight = FontWeight.SemiBold)
                 }
             }
+        }
+        if (uiState.mostrarDialogoFinal) {
+            AlertDialog(
+                onDismissRequest = { viewModel.onDismissDialog() },
+                title = { Text("¿Finalizaste la tarea?") },
+                text = { Text("Marca la tarea como completada o añade más tiempo.") },
+                confirmButton = {
+                    Button(
+                        onClick = { viewModel.onConfirmFinish() },
+                        colors = ButtonDefaults.outlinedButtonColors(contentColor = DarkGreenText),
+                        ) {
+                        Text("Sí")
+                    }
+                },
+                dismissButton = {
+                    TextButton(
+                        onClick = { viewModel.onAddMoreTime() },
+                        colors = ButtonDefaults.outlinedButtonColors(contentColor = DarkGreenText),
+                        ) {
+                        Text("+10 min")
+                    }
+                }
+            )
         }
     }
 }
@@ -118,7 +147,7 @@ fun TimerDisplay(timeInSeconds: Int) {
         text = formatTime(timeInSeconds),
         fontSize = 90.sp,
         fontWeight = FontWeight.Bold,
-        color = MaterialTheme.colorScheme.primary,
+        color = DarkGreenText,
         textAlign = TextAlign.Center
     )
 }
@@ -130,13 +159,15 @@ fun TimerControls(
     onIncrease: () -> Unit,
     onPlayPause: () -> Unit
 ) {
+    val buttonColor = if (!isTimerRunning) IconColor else Color.Gray
+
     Row(
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.Center,
         modifier = Modifier.fillMaxWidth()
     ) {
-        IconButton(onClick = onDecrease, enabled = false) {
-            Icon(imageVector = Icons.Default.Remove, contentDescription = "Disminuir tiempo", tint = Color.Gray, modifier = Modifier.size(48.dp))
+        IconButton(onClick = onDecrease, enabled = !isTimerRunning) {
+            Icon(Icons.Default.Remove, "Disminuir", tint = buttonColor, modifier = Modifier.size(48.dp))
         }
 
         Spacer(modifier = Modifier.width(30.dp))
@@ -145,15 +176,15 @@ fun TimerControls(
             Icon(
                 imageVector = if (isTimerRunning) Icons.Default.Pause else Icons.Default.PlayArrow,
                 contentDescription = if (isTimerRunning) "Pausar" else "Iniciar",
-                tint = MaterialTheme.colorScheme.primary,
+                tint = DarkGreenText,
                 modifier = Modifier.size(60.dp)
             )
         }
 
         Spacer(modifier = Modifier.width(30.dp))
 
-        IconButton(onClick = onIncrease, enabled = false) {
-            Icon(imageVector = Icons.Default.Add, contentDescription = "Aumentar tiempo", tint = Color.Gray, modifier = Modifier.size(48.dp))
+        IconButton(onClick = onIncrease, enabled = !isTimerRunning) {
+            Icon(Icons.Default.Add, "Aumentar", tint = buttonColor, modifier = Modifier.size(48.dp))
         }
     }
 }

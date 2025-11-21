@@ -24,8 +24,8 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.tomatetutiempo.data.model.Curso
+import androidx.compose.material.icons.filled.Delete
 
-// Colores
 val VerdePrincipal = Color(0xFF5FA777)
 val VerdeClaro = Color(0xFFE8F5E9)
 val VerdeFondo = Color(0xFFF1F8F4)
@@ -99,7 +99,8 @@ fun PantallaCrearTarea(
                             onClick = {
                                 viewModel.onCursoSeleccionado(curso)
                                 onCursoSeleccionado()
-                            }
+                            },
+                            onDeleteClick = { viewModel.eliminarCurso(curso.id) }
                         )
                     }
                 }
@@ -167,7 +168,8 @@ fun PantallaCrearTarea(
 @Composable
 fun TarjetaCurso(
     curso: Curso,
-    onClick: () -> Unit
+    onClick: () -> Unit,
+    onDeleteClick: () -> Unit
 ) {
     Card(
         modifier = Modifier
@@ -203,10 +205,19 @@ fun TarjetaCurso(
 
             Text(
                 text = curso.nombre,
+                modifier = Modifier.weight(1f),
                 fontSize = 18.sp,
                 fontWeight = FontWeight.Medium,
                 color = TextoGris
             )
+
+            IconButton(onClick = onDeleteClick) {
+                Icon(
+                    imageVector = Icons.Default.Delete,
+                    contentDescription = "Eliminar curso",
+                    tint = TextoGrisClaro
+                )
+            }
         }
     }
 }

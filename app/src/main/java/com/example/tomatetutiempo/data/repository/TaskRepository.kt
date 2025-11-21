@@ -13,16 +13,26 @@ import kotlinx.coroutines.suspendCancellableCoroutine
 import kotlin.coroutines.resume
 import kotlin.coroutines.resumeWithException
 
+/**
+ * Repositorio encargado de gestionar las operaciones de datos de las Tareas
+ * con Firebase Firestore.
+ */
 class TaskRepository {
 
     private val auth: FirebaseAuth = FirebaseAuth.getInstance()
     private val firestore: FirebaseFirestore = FirebaseFirestore.getInstance()
 
+    // Estado observable para la lista de tareas
     private val _tareas = MutableStateFlow<List<Tarea>>(emptyList())
     val tareas: StateFlow<List<Tarea>> = _tareas.asStateFlow()
 
+    /**
+     * Bloque de inicialización que configura el listener en tiempo real
+     * para las tareas del usuario actual al instanciar el repositorio.
+     */
     init {
         getCurrentUserId()?.let { userId ->
+            // Escuchamos la colección "tareas" ordenadas por fecha ascendente
             firestore.collection("users").document(userId).collection("tareas")
                 .orderBy("fecha", Query.Direction.ASCENDING)
                 .addSnapshotListener { snapshot, error ->
@@ -31,6 +41,7 @@ class TaskRepository {
                         return@addSnapshotListener
                     }
                     if (snapshot != null) {
+                        // Mapeamos los documentos a objetos Tarea y asignamos el ID
                         val listaTareas = snapshot.documents.mapNotNull { doc ->
                             val tarea = doc.toObject(Tarea::class.java)
                             tarea?.copy(id = doc.id)
@@ -45,9 +56,13 @@ class TaskRepository {
         return auth.currentUser?.uid
     }
 
+    /**
+     * Agrega una nueva tarea a la colección del usuario en Firestore.
+     */
     suspend fun agregarTarea(tarea: Tarea) {
         val userId = getCurrentUserId() ?: return
         try {
+            // Convertimos el callback de Firebase a Corutina
             suspendCancellableCoroutine<Unit> { continuation ->
                 firestore.collection("users").document(userId)
                     .collection("tareas").add(tarea)
@@ -59,6 +74,9 @@ class TaskRepository {
         }
     }
 
+    /**
+     * Actualiza los detalles principales (nombre, horas, descripción) de una tarea existente.
+     */
     suspend fun actualizarTarea(tareaId: String, nombre: String, horasNecesarias: Int, descripcion: String) {
         val userId = getCurrentUserId() ?: return
         try {
@@ -78,6 +96,9 @@ class TaskRepository {
         }
     }
 
+    /**
+     * Actualiza el estado de finalización de una tarea específica.
+     */
     suspend fun marcarTareaComoCompletada(tareaId: String, completada: Boolean) {
         val userId = getCurrentUserId() ?: return
         try {
@@ -92,6 +113,9 @@ class TaskRepository {
         }
     }
 
+    /**
+     * Elimina permanentemente una tarea de Firestore.
+     */
     suspend fun eliminarTarea(tareaId: String) {
         val userId = getCurrentUserId() ?: return
         try {

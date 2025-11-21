@@ -14,7 +14,8 @@ data class TimerUiState(
     val tarea: Tarea? = null,
     val tiempoRestanteSegundos: Int = 0,
     val isTimerRunning: Boolean = false,
-    val isLoading: Boolean = true
+    val isLoading: Boolean = true,
+    val mostrarDialogoFinal: Boolean = false
 )
 
 class TimerViewModel(
@@ -64,8 +65,10 @@ class TimerViewModel(
                     tiempoRestanteSegundos = _uiState.value.tiempoRestanteSegundos - 1
                 )
             }
-            _uiState.value = _uiState.value.copy(isTimerRunning = false)
-            onFinish()
+            _uiState.value = _uiState.value.copy(
+                isTimerRunning = false,
+                mostrarDialogoFinal = true
+            )
         }
     }
 
@@ -80,5 +83,39 @@ class TimerViewModel(
                 userRepository.onTaskCompleted()
             }
         }
+    }
+
+    fun onIncreaseTime() {
+        if (!_uiState.value.isTimerRunning) {
+            _uiState.value = _uiState.value.copy(
+                tiempoRestanteSegundos = _uiState.value.tiempoRestanteSegundos + 600
+            )
+        }
+    }
+
+    fun onDecreaseTime() {
+        if (!_uiState.value.isTimerRunning) {
+            val nuevoTiempo = (_uiState.value.tiempoRestanteSegundos - 600).coerceAtLeast(0)
+            _uiState.value = _uiState.value.copy(
+                tiempoRestanteSegundos = nuevoTiempo
+            )
+        }
+    }
+
+    fun onConfirmFinish() {
+        _uiState.value = _uiState.value.copy(mostrarDialogoFinal = false)
+        onFinish()
+    }
+
+    fun onAddMoreTime() {
+        _uiState.value = _uiState.value.copy(
+            tiempoRestanteSegundos = _uiState.value.tiempoRestanteSegundos + 600, // 10 minutos
+            mostrarDialogoFinal = false
+        )
+        onPlayPause()
+    }
+
+    fun onDismissDialog() {
+        _uiState.value = _uiState.value.copy(mostrarDialogoFinal = false)
     }
 }

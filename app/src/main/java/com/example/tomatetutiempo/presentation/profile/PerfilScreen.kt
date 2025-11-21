@@ -35,10 +35,24 @@ fun PerfilScreen(
 ) {
     val state by viewModel.state.collectAsState()
 
+    val topGradientColor = Color(0xFF81C784)
+
     Scaffold(
         topBar = {
             TopAppBar(
-                title = { Text("Perfil", color = Color.White) },
+                colors = TopAppBarDefaults.topAppBarColors(
+                    containerColor = topGradientColor,
+                    titleContentColor = Color.White,
+                    navigationIconContentColor = Color.White
+                ),
+                title = {
+                    Text(
+                        text = "Perfil",
+                        color = Color.White,
+                        fontWeight = FontWeight.SemiBold,
+                        fontSize = 20.sp
+                    )
+                },
                 navigationIcon = {
                     IconButton(onClick = onNavigateBack) {
                         Icon(
@@ -47,10 +61,7 @@ fun PerfilScreen(
                             tint = Color.White
                         )
                     }
-                },
-                colors = TopAppBarDefaults.topAppBarColors(
-                    containerColor = Color.Transparent
-                )
+                }
             )
         },
         containerColor = Color.Transparent
@@ -62,7 +73,7 @@ fun PerfilScreen(
                 .background(
                     brush = Brush.verticalGradient(
                         colors = listOf(
-                            Color(0xFF81C784),
+                            topGradientColor,
                             Color(0xFF66BB6A)
                         )
                     )
@@ -138,7 +149,7 @@ fun PerfilScreen(
                                 label = ""
                             )
 
-                            Divider(
+                            HorizontalDivider(
                                 modifier = Modifier
                                     .height(50.dp)
                                     .width(1.dp),
@@ -151,7 +162,7 @@ fun PerfilScreen(
                                 label = "Tareas completadas"
                             )
 
-                            Divider(
+                            HorizontalDivider(
                                 modifier = Modifier
                                     .height(50.dp)
                                     .width(1.dp),
@@ -195,6 +206,12 @@ fun PerfilScreen(
             }
         }
     }
+}
+
+
+@Composable
+private fun HorizontalDivider(modifier: Modifier, color: Color) {
+    Box(modifier = modifier.background(color))
 }
 
 @Composable

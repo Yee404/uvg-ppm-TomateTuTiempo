@@ -22,6 +22,7 @@ fun RegisterFooter(onClick: () -> Unit) {
     val greencolor = Color(0xFF467848)
     val text = buildAnnotatedString {
         append(stringResource(R.string.dont_account))
+        append("  ")
         withStyle(SpanStyle(color = greencolor, fontWeight = FontWeight.Companion.Bold)) {
             append(stringResource(R.string.register))
         }

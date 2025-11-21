@@ -38,7 +38,6 @@ fun PantallaDetalleTarea(
         } ?: ""
     }
 
-    // Obtener fecha actual en milisegundos (inicio del día)
     val fechaActual = remember {
         Calendar.getInstance().apply {
             set(Calendar.HOUR_OF_DAY, 0)
@@ -87,7 +86,6 @@ fun PantallaDetalleTarea(
                 .background(VerdePrincipal)
                 .padding(padding)
         ) {
-            // Contenido desplazable en card blanca
             Card(
                 modifier = Modifier
                     .fillMaxSize()
@@ -280,7 +278,6 @@ fun PantallaDetalleTarea(
     // Mostrar error si existe
     uiState.error?.let { error ->
         LaunchedEffect(error) {
-            // Aquí podrías mostrar un Snackbar
             println("Error: $error")
             viewModel.clearError()
         }
